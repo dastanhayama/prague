@@ -19,7 +19,7 @@ export default async function HomePage() {
     <div className="min-h-screen flex flex-col items-center justify-center">
       <MediaFileUpload 
       multiple={true} // возможность загружать несколько файлов
-      accept={['image/png', 'image/jpeg']} // допустимые форматы
+      accept={['image/png', 'image/jpeg', 'video/mpeg', 'video/mp4', 'video/mov']} // допустимые форматы
       maxSize={10 * 1024 * 1024} // максимальный размер файла (10MB)
       />
     </div>
