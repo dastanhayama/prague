@@ -6,12 +6,7 @@ import { useDropzone } from 'react-dropzone'
 import UploadIcon from '@icons/General/upload-cloud-02.svg'
 import MediaPreview from './MediaPreview' // Import the new component
 
-const LoaderIcon = () => (
-  <svg className="animate-spin" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="12" cy="12" r="10" stroke="#E5E7EB" strokeWidth="4" />
-    <path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#344054" strokeWidth="4" strokeLinecap="round" />
-  </svg>
-)
+
 
 interface MediaUploadProps {
   multiple: boolean
@@ -109,6 +104,7 @@ export default function MediaFileUpload({
 
   // Function to upload files to Payload CMS
   const uploadToPayload = async (fileToUpload: FileWithPreview) => {
+   
     try {
       const formData = new FormData()
       formData.append('media', fileToUpload)
