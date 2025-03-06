@@ -4,10 +4,13 @@
   /* COLORS */
   --color-primary: #ffffff;
   --color-secondary: #eaecf0;
+  --color-tertiary: #f2f4f7;
   --color-tertiary-color-fg: #a80b48;
 
   /* BORDER-COLORS */
   --color-brand-solid: #61646c;
+  --color-brand-solid-primary: #161b26;
+  --color-error-solid: #d92d20;
 
   /* SPACING */
   --spacing-none: 0;

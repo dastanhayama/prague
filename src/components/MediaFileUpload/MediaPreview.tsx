@@ -34,21 +34,21 @@ interface MediaPreviewProps {
 // Define CSS classes as constants
 const container_class = 'mt-4 w-full flex flex-wrap gap-2 justify-start'
 const file_container_class = (isError: boolean) =>
-  `relative ${isError ? 'border-2 border-[#D92D20] rounded-[12px] cursor-pointer' : ''}`
+  `relative ${isError ? 'border-2 border-error-solid rounded-xl cursor-pointer' : ''}`
 const loader_container_class =
-  'w-[166px] h-[166px] bg-primary rounded-[12px] flex items-center justify-center border border-[#EAECF0]'
+  'w-[166px] h-[166px] bg-primary rounded-xl flex items-center justify-center border border-secondary'
 const preview_container_class = (isError: boolean, isDisabled: boolean, isActive: boolean) =>
-  `relative w-[166px] h-[166px] bg-cover bg-center rounded-[12px] flex items-center justify-center cursor-pointer group ${
-    isError ? 'bg-primary' : 'bg-[#F2F4F7]'
+  `relative w-[166px] h-[166px] bg-cover bg-center rounded-xl flex items-center justify-center cursor-pointer group ${
+    isError ? 'bg-primary' : 'bg-tertiary'
   } ${isDisabled ? 'opacity-40' : ''} ${
-    isActive && !isError ? 'outline outline-2 outline-[#161B26]' : '' // Disable active state for error component
+    isActive && !isError ? 'outline outline-2 outline-brand-solid-primary' : '' // Disable active state for error component
   }`
 const overlay_class =
-  'absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 group-active:opacity-30 rounded-[12px] pointer-events-none'
-const alert_icon_container_class = 'absolute top-0 right-0 p-2'
-const alert_icon_class = 'w-[24px] h-[24px] [&>path]:stroke-[#D92D20]'
+  'absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 group-active:opacity-30 rounded-xl pointer-events-none'
+const alert_icon_container_class = 'absolute top-0 right-0 p-md'
+const alert_icon_class = 'w-[24px] h-[24px] [&>path]:stroke-error-solid'
 const delete_button_class =
-  'flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-[8px] p-[10px] border border-[#D0D5DD] z-10 focus:ring-2 focus:ring-[#98A2B324] active:bg-black active:opacity-30'
+  'flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-md p-[10px] border border-[#D0D5DD] z-10 focus:ring-2 focus:ring-[#98A2B324] active:bg-black active:opacity-30'
 const bin_icon_class = 'w-[20px] h-[20px]'
 
 export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disabled = false }: MediaPreviewProps) {
