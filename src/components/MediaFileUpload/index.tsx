@@ -46,9 +46,8 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
     return null
   }
 
-  const onError = (error:any) => {
-    alert(error)
-    
+  const onError = (error: any) => {
+    alert(error instanceof Error ? error.message : String(error))
   }
 
   // Update file status after upload
@@ -86,13 +85,15 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
       })
 
       if (!response.ok) {
-        console.error('Failed to delete file from server')
+        const errorText = await response.text()
+        const errorMessage = `Failed to delete file from server: ${errorText}`
+        onError(errorMessage)
       } else {
         // Remove from uploadedFiles state
         setUploadedFiles((prev) => prev.filter((file) => file.id !== fileId))
       }
     } catch (error) {
-      console.error('Error deleting file:', error)
+      onError(`Error deleting file: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
 
@@ -111,8 +112,9 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
 
       if (!response.ok) {
         const errorText = await response.text()
-        updateFileStatus(fileToUpload, 'error', undefined, `Upload failed: ${errorText}`)
-        throw new Error(`Upload failed: ${errorText}`)
+        const errorMessage = `Upload failed: ${errorText}`
+        updateFileStatus(fileToUpload, 'error', undefined, errorMessage)
+        throw new Error(errorMessage)
       }
 
       const result: UploadResponse = await response.json()
@@ -135,10 +137,11 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
       return null
     } catch (error: any) {
       if (error.name === 'AbortError') {
-        onError(error)
+        onError("Upload was cancelled")
       } else {
-        updateFileStatus(fileToUpload, 'error', undefined, error instanceof Error ? error.message : String(error))
-        onError(error)
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        updateFileStatus(fileToUpload, 'error', undefined, errorMessage)
+        onError(errorMessage)
       }
       return null
     }
@@ -178,6 +181,9 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
         const { file } = rejection
         const errorMsg = rejection.errors.map((e: any) => e.message).join(', ')
 
+        // Alert for rejected files
+        onError(`File "${file.name}" was rejected: ${errorMsg}`)
+
         return Object.assign(file, {
           preview: URL.createObjectURL(file),
           isValid: false,
@@ -199,14 +205,19 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
 
       // Upload valid files one by one
       setIsLoading(true)
-      for (const file of newFiles) {
-        if (file.isValid) {
-          const abortController = new AbortController()
-          setAbortControllers((prev) => ({ ...prev, [file.name]: abortController }))
-          await uploadToPayload(file, abortController)
+      try {
+        for (const file of newFiles) {
+          if (file.isValid) {
+            const abortController = new AbortController()
+            setAbortControllers((prev) => ({ ...prev, [file.name]: abortController }))
+            await uploadToPayload(file, abortController)
+          }
         }
+      } catch (error) {
+        onError(`Upload process failed: ${error instanceof Error ? error.message : String(error)}`)
+      } finally {
+        setIsLoading(false)
       }
-      setIsLoading(false)
     },
     [accept, maxSize, multiple]
   )
