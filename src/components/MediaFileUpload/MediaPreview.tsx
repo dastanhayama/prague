@@ -29,29 +29,19 @@ interface MediaPreviewProps {
   onRemoveFile: (file: FileWithPreview) => void
   onCancelUpload: (file: FileWithPreview) => void // Add onCancelUpload prop
   disabled?: boolean
+  enabled?: boolean
+  hover?: boolean
+  active?: boolean
+  focus?: boolean
+  loading?: boolean
+  error?: boolean
+  preloading?: boolean
+  pressed?: boolean
 }
 
-// Define CSS classes as constants
-const container_class = 'mt-4 w-full flex flex-wrap gap-2 justify-start'
-const file_container_class = (isError: boolean) =>
-  `relative ${isError ? 'border-2 border-error-solid rounded-xl cursor-pointer' : ''}`
-const loader_container_class =
-  'w-[166px] h-[166px] bg-primary rounded-xl flex items-center justify-center border border-secondary'
-const preview_container_class = (isError: boolean, isDisabled: boolean, isActive: boolean) =>
-  `relative w-[166px] h-[166px] bg-cover bg-center rounded-xl flex items-center justify-center cursor-pointer group ${
-    isError ? 'bg-primary' : 'bg-tertiary'
-  } ${isDisabled ? 'opacity-40' : ''} ${
-    isActive && !isError ? 'outline outline-2 outline-brand-solid-primary' : '' // Disable active state for error component
-  }`
-const overlay_class =
-  'absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 group-active:opacity-30 rounded-xl pointer-events-none'
-const alert_icon_container_class = 'absolute top-0 right-0 p-md'
-const alert_icon_class = 'w-[24px] h-[24px] [&>path]:stroke-error-solid'
-const delete_button_class =
-  'flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-md p-[10px] border border-[#D0D5DD] z-10 focus:ring-2 focus:ring-[#98A2B324] active:bg-black active:opacity-30'
-const bin_icon_class = 'w-[20px] h-[20px]'
 
-export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disabled = false }: MediaPreviewProps) {
+
+export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disabled=false, active, preloading, focus, error, loading, pressed, hover, enabled }: MediaPreviewProps) {
   const [activeFile, setActiveFile] = useState<FileWithPreview | null>(null) // Track the active file
 
   // Cleanup preview URLs to avoid memory leaks
@@ -71,6 +61,28 @@ export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disa
     setActiveFile((prev) => (prev === file ? null : file))
   }
 
+  // Define CSS classes as constants
+const container_class = 'mt-4 w-full flex flex-wrap gap-2 justify-start'
+const file_container_class = (isError: boolean) =>
+  `relative ${isError ? 'border-2 border-error-solid rounded-xl cursor-pointer' : ''}`
+const loader_container_class =
+  'w-[166px] h-[166px] bg-primary rounded-xl flex items-center justify-center border border-secondary'
+const preview_container_class = (isError: boolean, isDisabled: boolean, isActive: boolean) =>
+  `relative w-[166px] h-[166px] bg-cover bg-center rounded-xl focus:ring focus:ring-4 focus:ring-[#98A2B324] flex items-center justify-center cursor-pointer group ${
+    isError ? 'bg-primary' : 'bg-tertiary'
+  } ${isDisabled ? 'opacity-40' : ''} ${
+    isActive && !isError ? 'outline outline-2 outline-brand-solid-primary' : '' // Disable active state for error component
+  } ${active && 'outline outline-2 outline-brand-solid-primary'}
+    ${focus && 'ring ring-4 ring-[#98A2B324]'}`
+  
+const overlay_class =
+  `absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 group-active:opacity-30 rounded-xl pointer-events-none ${hover &&'opacity-20'} ${pressed && 'opacity-30'}`
+const alert_icon_container_class = 'absolute top-0 right-0 p-md'
+const alert_icon_class = 'w-[24px] h-[24px] [&>path]:stroke-error-solid'
+const delete_button_class =
+  'flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-md p-[10px] border border-[#D0D5DD] z-10 focus:ring-2 focus:ring-[#98A2B324] active:bg-black active:opacity-30'
+const bin_icon_class = 'w-[20px] h-[20px]'
+
   return (
     <div className={container_class}>
       {files.map((file, index) => (
@@ -87,7 +99,7 @@ export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disa
             <div
               className={preview_container_class(!file.isValid || file.status === 'error', disabled, activeFile === file)}
               style={{
-                backgroundImage: file.preview ? `url(${file.preview})` : '',
+                backgroundImage: file.preview && !preloading ? `url(${file.preview})` : '#F2F4F7',
                 backgroundSize: 'cover',
               }}
             >
@@ -102,7 +114,8 @@ export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disa
               )}
 
               {/* Delete button */}
-              <button
+              {!preloading && (
+                <button
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
@@ -113,6 +126,8 @@ export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disa
               >
                 <BinIcon className={bin_icon_class} />
               </button>
+              )}
+              
             </div>
           )}
         </div>

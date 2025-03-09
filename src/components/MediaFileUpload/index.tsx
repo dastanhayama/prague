@@ -3,13 +3,15 @@
 import { useCallback, useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import UploadIcon from '@icons/General/upload-cloud-02.svg'
-import MediaPreview from './MediaPreview' // Import the new component
+import MediaPreview from './MediaPreview'
 
-interface MediaUploadProps {
+export interface MediaUploadProps {
   multiple: boolean
   accept: string[]
   maxSize: number
   onChange?: (files: any[]) => void
+  disabled?: boolean // Add disabled prop
+  hovered?: boolean // Add disabled prop
 }
 
 interface UploadResponse {
@@ -26,14 +28,13 @@ export interface FileWithPreview extends File {
   url?: string
 }
 
-export default function MediaFileUpload({ multiple, accept, maxSize, onChange }: MediaUploadProps) {
+export default function MediaFileUpload({ multiple, accept, maxSize, onChange, disabled, hovered}: MediaUploadProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [files, setFiles] = useState<FileWithPreview[]>([]) // State to track uploaded files with preview
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]) // State to track successfully uploaded files
-  const [abortControllers, setAbortControllers] = useState<{ [key: string]: AbortController }>({}) // State to track AbortControllers
+  const [files, setFiles] = useState<FileWithPreview[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
+  const [abortControllers, setAbortControllers] = useState<{ [key: string]: AbortController }>({})
 
   useEffect(() => {
-    // Call onChange when uploadedFiles changes
     if (onChange) {
       onChange(uploadedFiles)
     }
@@ -50,7 +51,6 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
     alert(error instanceof Error ? error.message : String(error))
   }
 
-  // Update file status after upload
   const updateFileStatus = (file: FileWithPreview, status: 'success' | 'error', uploadedFile?: any, error?: string) => {
     setFiles((prevFiles) =>
       prevFiles.map((f) => {
@@ -67,29 +67,22 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
     )
   }
 
-  // Function to remove a file
   const removeFile = (fileToRemove: FileWithPreview) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file !== fileToRemove))
-
-    // If the file has an ID (was uploaded), delete it from the server
     if (fileToRemove.id) {
       deleteFileFromPayload(fileToRemove.id)
     }
   }
 
-  // Function to delete file from Payload
   const deleteFileFromPayload = async (fileId: string) => {
     try {
       const response = await fetch(`/api/media/${fileId}`, {
         method: 'DELETE',
       })
-
       if (!response.ok) {
         const errorText = await response.text()
-        const errorMessage = `Failed to delete file from server: ${errorText}`
-        onError(errorMessage)
+        onError(`Failed to delete file from server: ${errorText}`)
       } else {
-        // Remove from uploadedFiles state
         setUploadedFiles((prev) => prev.filter((file) => file.id !== fileId))
       }
     } catch (error) {
@@ -97,43 +90,33 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
     }
   }
 
-  // Function to upload files to Payload CMS
   const uploadToPayload = async (fileToUpload: FileWithPreview, abortController: AbortController) => {
     try {
       const formData = new FormData()
       formData.append('media', fileToUpload)
-
-      // Make the request to the local Payload API
       const response = await fetch('/api/media', {
         method: 'POST',
         body: formData,
-        signal: abortController.signal, // Pass the AbortSignal to the fetch request
+        signal: abortController.signal,
       })
-
       if (!response.ok) {
         const errorText = await response.text()
         const errorMessage = `Upload failed: ${errorText}`
         updateFileStatus(fileToUpload, 'error', undefined, errorMessage)
         throw new Error(errorMessage)
       }
-
       const result: UploadResponse = await response.json()
-
-      // Handle successful uploads
       if (result.docs && result.docs.length > 0) {
         const uploadedFile = result.docs[0]
         updateFileStatus(fileToUpload, 'success', uploadedFile)
         setUploadedFiles((prev) => [...prev, uploadedFile])
         return uploadedFile
       }
-
-      // Handle any errors returned from the API
       if (result.errors && result.errors.length > 0) {
         const error = result.errors[0]
         updateFileStatus(fileToUpload, 'error', undefined, error)
         throw new Error(error)
       }
-
       return null
     } catch (error: any) {
       if (error.name === 'AbortError') {
@@ -147,27 +130,26 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
     }
   }
 
-  // Function to cancel an ongoing upload
   const cancelUpload = (file: FileWithPreview) => {
     const abortController = abortControllers[file.name]
     if (abortController) {
-      abortController.abort() // Abort the ongoing upload
+      abortController.abort()
       setAbortControllers((prev) => {
         const newControllers = { ...prev }
-        delete newControllers[file.name] // Remove the AbortController for this file
+        delete newControllers[file.name]
         return newControllers
       })
-      setFiles((prevFiles) => prevFiles.filter((f) => f !== file)) // Remove the file from the state
+      setFiles((prevFiles) => prevFiles.filter((f) => f !== file))
     }
   }
 
   const onDrop = useCallback(
     async (acceptedFiles: File[], fileRejections: any[]) => {
-      // Process accepted files
+      if (disabled) return // Do nothing if disabled
+
       const newFiles = acceptedFiles.map((file) => {
         const error = validateFile(file)
         const preview = URL.createObjectURL(file)
-
         return Object.assign(file, {
           preview,
           isValid: !error,
@@ -176,14 +158,10 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
         })
       })
 
-      // Process rejected files
       const rejectedFiles = fileRejections.map((rejection) => {
         const { file } = rejection
         const errorMsg = rejection.errors.map((e: any) => e.message).join(', ')
-
-        // Alert for rejected files
         onError(`File "${file.name}" was rejected: ${errorMsg}`)
-
         return Object.assign(file, {
           preview: URL.createObjectURL(file),
           isValid: false,
@@ -192,18 +170,14 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
         })
       })
 
-      // Combine and update files state
       const allNewFiles = [...newFiles, ...rejectedFiles]
-
-      // In single file mode, replace existing files
       if (!multiple) {
         setFiles(allNewFiles)
-        setUploadedFiles([]) // Clear previously uploaded files
+        setUploadedFiles([])
       } else {
         setFiles((prev) => [...prev, ...allNewFiles])
       }
 
-      // Upload valid files one by one
       setIsLoading(true)
       try {
         for (const file of newFiles) {
@@ -219,32 +193,34 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange }:
         setIsLoading(false)
       }
     },
-    [accept, maxSize, multiple]
+    [accept, maxSize, multiple, disabled]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: accept.reduce((acc, type) => ({ ...acc, [type]: [] }), {}),
     multiple,
-    maxSize: maxSize, // Convert MB to bytes
+    maxSize: maxSize,
+    disabled, // Disable dropzone if the component is disabled
   })
 
   const formatAcceptedFormats = (accept: string[]): string => {
-    const formatted = accept.map(type => type.split('/')[1].toUpperCase());
+    const formatted = accept.map(type => type.split('/')[1].toUpperCase())
     return formatted.length > 1 
       ? formatted.slice(0, -1).join(', ') + ' or ' + formatted[formatted.length - 1] 
-      : formatted[0];
-  };
-  
-  const acceptedFormats = formatAcceptedFormats(accept);
+      : formatted[0]
+  }
+
+  const acceptedFormats = formatAcceptedFormats(accept)
 
   const container_class = `py-xl px-3xl rounded-xl text-center cursor-pointer max-w-[512px] w-full h-auto flex flex-col justify-start items-center ${
-    isDragActive ? 'border-brand-solid border-2' : 'border-secondary border'
-  }`
+    isDragActive || hovered ? 'border-brand-solid border-2' : 'border-secondary border'
+  } ${disabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-primary'}`
+
   const upload_icon_container_class = `flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-md p-[10px] border border-secondary mb-3`
   const upload_icon_class = `w-[20px] h-[20px]`
   const text_container_class = `flex flex-col gap-1`
-  const main_text_class = `font-semibold text-[#A80B48] text-sm leading-5`
+  const main_text_class = `font-semibold  text-sm leading-5 ${disabled ? 'text-[#98A2B3]': 'text-[#A80B48]'}`
   const main_text_span_class = `font-normal text-[#475467]`
   const sub_text_class = `font-normal text-[#475467] text-[12px] leading-[18px]`
 

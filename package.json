@@ -12,7 +12,9 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "latest",
@@ -20,6 +22,8 @@
     "@payloadcms/payload-cloud": "latest",
     "@payloadcms/richtext-lexical": "latest",
     "@tailwindcss/postcss": "^4.0.9",
+    "ajv": "^8.17.1",
+    "ajv-keywords": "^5.1.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "graphql": "^16.8.1",
@@ -30,17 +34,28 @@
     "react-dom": "19.0.0",
     "react-dropzone": "^14.3.8",
     "sharp": "0.32.6",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.9"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.5",
     "@eslint/eslintrc": "^3.2.0",
+    "@storybook/addon-essentials": "^8.6.4",
+    "@storybook/addon-onboarding": "^8.6.4",
+    "@storybook/blocks": "^8.6.4",
+    "@storybook/experimental-addon-test": "^8.6.4",
+    "@storybook/nextjs": "^8.6.4",
+    "@storybook/react": "^8.6.4",
+    "@storybook/test": "^8.6.4",
     "@svgr/webpack": "^8.1.0",
     "@types/node": "^22.5.4",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "eslint": "^9.16.0",
     "eslint-config-next": "15.2.0",
+    "eslint-plugin-storybook": "^0.11.4",
     "prettier": "^3.4.2",
+    "storybook": "^8.6.4",
     "typescript": "5.7.3"
   },
   "engines": {
@@ -50,6 +65,12 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended",
+      "plugin:storybook/recommended"
     ]
   }
 }
