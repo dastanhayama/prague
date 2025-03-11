@@ -41,7 +41,7 @@ interface MediaPreviewProps {
 
 
 
-export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disabled=false, active, preloading, focus, error, loading, pressed, hover, enabled }: MediaPreviewProps) {
+export default function MediaPreview({ files, onRemoveFile, onCancelUpload, disabled=false, active, preloading }: MediaPreviewProps) {
   const [activeFile, setActiveFile] = useState<FileWithPreview | null>(null) // Track the active file
 
   // Cleanup preview URLs to avoid memory leaks
@@ -71,12 +71,11 @@ const preview_container_class = (isError: boolean, isDisabled: boolean, isActive
   `relative w-[166px] h-[166px] bg-cover bg-center rounded-xl focus:ring focus:ring-4 focus:ring-[#98A2B324] flex items-center justify-center cursor-pointer group ${
     isError ? 'bg-primary' : 'bg-tertiary'
   } ${isDisabled ? 'opacity-40' : ''} ${
-    isActive && !isError ? 'outline outline-2 outline-brand-solid-primary' : '' // Disable active state for error component
-  } ${active && 'outline outline-2 outline-brand-solid-primary'}
-    ${focus && 'ring ring-4 ring-[#98A2B324]'}`
+   ( isActive && !isError) || active ? 'outline outline-2 outline-brand-solid-primary' : '' // Disable active state for error component
+  }`
   
 const overlay_class =
-  `absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 group-active:opacity-30 rounded-xl pointer-events-none ${hover &&'opacity-20'} ${pressed && 'opacity-30'}`
+  `absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-20 group-active:opacity-30 rounded-xl pointer-events-none `
 const alert_icon_container_class = 'absolute top-0 right-0 p-md'
 const alert_icon_class = 'w-[24px] h-[24px] [&>path]:stroke-error-solid'
 const delete_button_class =

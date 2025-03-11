@@ -1,5 +1,6 @@
 import React from 'react'
 import './globals.css'
+import { ToastProvider } from '@/components/Toast/ToastContext'
 
 export const metadata = {
   description: 'A blank template using Payload in a Next.js app.',
@@ -12,7 +13,11 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <main>{children}</main>
+        <main>
+        <ToastProvider>
+        {children}
+        </ToastProvider>  
+        </main>
       </body>
     </html>
   )

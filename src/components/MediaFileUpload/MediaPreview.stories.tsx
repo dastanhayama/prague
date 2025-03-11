@@ -93,18 +93,18 @@ export const EnabledSuccess: Story = {
   },
 };
 
-// Hover state (simulated with a decorator)
-export const Hover: Story = {
-  args: {
-    files: [mockFiles[1]], // Success file
-    hover: true,
-    onRemoveFile: fn(),
-    onCancelUpload: fn(),
-  },
-  parameters: {
-    pseudo: { hover: true }, // Simulate hover state
-  },
-};
+// // Hover state (simulated with a decorator)
+// export const Hover: Story = {
+//   args: {
+//     files: [mockFiles[1]], // Success file
+//     hover: true,
+//     onRemoveFile: fn(),
+//     onCancelUpload: fn(),
+//   },
+//   parameters: {
+//     pseudo: { hover: true }, // Simulate hover state
+//   },
+// };
 
 // Active state
 export const Active: Story = {
@@ -120,30 +120,30 @@ export const Active: Story = {
 };
 
 // Pressed state
-export const Pressed: Story = {
-  args: {
-    files: [mockFiles[1]], // Success file
-    pressed: true,
-    onRemoveFile: fn(),
-    onCancelUpload: fn(),
-  },
-  parameters: {
-    pseudo: { active: true, hover: true }, // Simulate pressed state
-  },
-};
+// export const Pressed: Story = {
+//   args: {
+//     files: [mockFiles[1]], // Success file
+//     pressed: true,
+//     onRemoveFile: fn(),
+//     onCancelUpload: fn(),
+//   },
+//   parameters: {
+//     pseudo: { active: true, hover: true }, // Simulate pressed state
+//   },
+// };
 
 // Focus state
-export const Focus: Story = {
-  args: {
-    files: [mockFiles[1]], // Success file
-    focus: true,
-    onRemoveFile: fn(),
-    onCancelUpload: fn(),
-  },
-  parameters: {
-    pseudo: { focus: true }, // Simulate focus state
-  },
-};
+// export const Focus: Story = {
+//   args: {
+//     files: [mockFiles[1]], // Success file
+//     focus: true,
+//     onRemoveFile: fn(),
+//     onCancelUpload: fn(),
+//   },
+//   parameters: {
+//     pseudo: { focus: true }, // Simulate focus state
+//   },
+// };
 
 // Loading state
 export const Loading: Story = {

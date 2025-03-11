@@ -6,11 +6,20 @@
   --color-secondary: #eaecf0;
   --color-tertiary: #f2f4f7;
   --color-tertiary-color-fg: #a80b48;
+  /* TEXT-COLORS */
+  --color-secondary-700: #344054;
 
   /* BORDER-COLORS */
   --color-brand-solid: #61646c;
   --color-brand-solid-primary: #161b26;
   --color-error-solid: #d92d20;
+  /* FOREGROUND-COLORS */
+  --color-fg-success-primary: #079455;
+  --color-fg-error-primary: #d92d20;
+  --color-fg-warning-primary: #dc6803;
+  --color-fg-quaternary-500: #667085;
+  --color-fg-brand-primary-600: #c00c53;
+  --color-fg-secondary-700: #344054;
 
   /* SPACING */
   --spacing-none: 0;
