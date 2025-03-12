@@ -28,7 +28,14 @@ export interface FileWithPreview extends File {
   url?: string
 }
 
-export default function MediaFileUpload({ multiple, accept, maxSize, onChange, disabled, hovered}: MediaUploadProps) {
+export default function MediaFileUpload({
+  multiple,
+  accept,
+  maxSize,
+  onChange,
+  disabled,
+  hovered,
+}: MediaUploadProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [files, setFiles] = useState<FileWithPreview[]>([])
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
@@ -51,19 +58,30 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange, d
     alert(error instanceof Error ? error.message : String(error))
   }
 
-  const updateFileStatus = (file: FileWithPreview, status: 'success' | 'error', uploadedFile?: any, error?: string) => {
+  const updateFileStatus = (
+    file: FileWithPreview,
+    status: 'success' | 'error',
+    uploadedFile?: any,
+    error?: string,
+  ) => {
     setFiles((prevFiles) =>
       prevFiles.map((f) => {
         if (f === file) {
           return {
             ...f,
             status,
-            ...(uploadedFile ? { id: uploadedFile.id, url: uploadedFile.url, preview: uploadedFile.url || f.preview } : {}),
+            ...(uploadedFile
+              ? {
+                  id: uploadedFile.id,
+                  url: uploadedFile.url,
+                  preview: uploadedFile.url || f.preview,
+                }
+              : {}),
             ...(error ? { error } : {}),
           }
         }
         return f
-      })
+      }),
     )
   }
 
@@ -90,7 +108,10 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange, d
     }
   }
 
-  const uploadToPayload = async (fileToUpload: FileWithPreview, abortController: AbortController) => {
+  const uploadToPayload = async (
+    fileToUpload: FileWithPreview,
+    abortController: AbortController,
+  ) => {
     try {
       const formData = new FormData()
       formData.append('media', fileToUpload)
@@ -120,7 +141,7 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange, d
       return null
     } catch (error: any) {
       if (error.name === 'AbortError') {
-        onError("Upload was cancelled")
+        onError('Upload was cancelled')
       } else {
         const errorMessage = error instanceof Error ? error.message : String(error)
         updateFileStatus(fileToUpload, 'error', undefined, errorMessage)
@@ -193,7 +214,7 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange, d
         setIsLoading(false)
       }
     },
-    [accept, maxSize, multiple, disabled]
+    [accept, maxSize, multiple, disabled],
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -205,29 +226,29 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange, d
   })
 
   const formatAcceptedFormats = (accept: string[]): string => {
-    const formatted = accept.map(type => type.split('/')[1].toUpperCase())
-    return formatted.length > 1 
-      ? formatted.slice(0, -1).join(', ') + ' or ' + formatted[formatted.length - 1] 
+    const formatted = accept.map((type) => type.split('/')[1].toUpperCase())
+    return formatted.length > 1
+      ? formatted.slice(0, -1).join(', ') + ' or ' + formatted[formatted.length - 1]
       : formatted[0]
   }
 
   const acceptedFormats = formatAcceptedFormats(accept)
 
-  const container_class = `py-xl px-3xl rounded-xl text-center cursor-pointer max-w-[512px] w-full h-auto flex flex-col justify-start items-center ${
+  const container_class = `py-xl px-3xl rounded-xl text-center cursor-pointer max-w-[512px] w-full h-auto flex flex-col justify-start items-center hover:border-brand-solid hover:border-2 ${
     isDragActive || hovered ? 'border-brand-solid border-2' : 'border-secondary border'
-  } ${disabled ? 'cursor-not-allowed bg-[#F9FAFB]' : 'bg-primary'}`
+  } ${disabled ? 'cursor-not-allowed bg-[#F9FAFB] border-none' : 'bg-primary'}`
 
   const upload_icon_container_class = `flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-md p-[10px] border border-secondary mb-3`
   const upload_icon_class = `w-[20px] h-[20px]`
   const text_container_class = `flex flex-col gap-1`
-  const main_text_class = `font-semibold  text-sm leading-5 ${disabled ? 'text-[#98A2B3]': 'text-[#A80B48]'}`
+  const main_text_class = `font-semibold  text-sm leading-5 ${disabled ? 'text-[#98A2B3]' : 'text-[#A80B48]'}`
   const main_text_span_class = `font-normal text-[#475467]`
   const sub_text_class = `font-normal text-[#475467] text-[12px] leading-[18px]`
 
   return (
     <>
       <div {...getRootProps()} className={container_class}>
-        <input {...getInputProps()} />
+        <input {...getInputProps()} disabled={disabled} />
         <div className={upload_icon_container_class}>
           <UploadIcon className={upload_icon_class} />
         </div>
@@ -235,7 +256,9 @@ export default function MediaFileUpload({ multiple, accept, maxSize, onChange, d
           <p className={main_text_class}>
             Click to upload <span className={main_text_span_class}>or drag and drop</span>
           </p>
-          <p className={sub_text_class}>{acceptedFormats} (max. {maxSize / (1024 * 1024)}MB)</p>
+          <p className={sub_text_class}>
+            {acceptedFormats} (max. {maxSize / (1024 * 1024)}MB)
+          </p>
         </div>
       </div>
 
