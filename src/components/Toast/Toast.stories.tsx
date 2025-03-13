@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import Toast, { ToastType } from './index'; // Adjust the import path as needed
+import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
+import Toast, { ToastType } from './index' // Adjust the import path as needed
 
 // Meta configuration for Storybook
 const meta = {
@@ -29,10 +29,10 @@ const meta = {
     onClose: fn(),
     id: 'toast-1', // Default ID for the toast
   },
-} satisfies Meta<typeof Toast>;
+} satisfies Meta<typeof Toast>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Default Toast
 export const Default: Story = {
@@ -40,8 +40,9 @@ export const Default: Story = {
     type: 'default',
     message: 'This is a default toast message.',
     supportText: 'Additional information can go here.',
+    duration: 0,
   },
-};
+}
 
 // Brand Toast
 export const Brand: Story = {
@@ -49,8 +50,9 @@ export const Brand: Story = {
     type: 'brand',
     message: 'This is a brand toast message.',
     supportText: 'Additional information can go here.',
+    duration: 0,
   },
-};
+}
 
 // Info Toast
 export const Info: Story = {
@@ -58,8 +60,9 @@ export const Info: Story = {
     type: 'info',
     message: 'This is an info toast message.',
     supportText: 'Additional information can go here.',
+    duration: 0,
   },
-};
+}
 
 // Error Toast
 export const Error: Story = {
@@ -67,8 +70,9 @@ export const Error: Story = {
     type: 'error',
     message: 'This is an error toast message.',
     supportText: 'Additional information can go here.',
+    duration: 0,
   },
-};
+}
 
 // Warning Toast
 export const Warning: Story = {
@@ -76,8 +80,9 @@ export const Warning: Story = {
     type: 'warning',
     message: 'This is a warning toast message.',
     supportText: 'Additional information can go here.',
+    duration: 0,
   },
-};
+}
 
 // Success Toast
 export const Success: Story = {
@@ -85,5 +90,6 @@ export const Success: Story = {
     type: 'success',
     message: 'This is a success toast message.',
     supportText: 'Additional information can go here.',
+    duration: 0,
   },
-};
+}
