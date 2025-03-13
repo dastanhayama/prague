@@ -1,13 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import MediaPreview from './MediaPreview';
-import { FileWithPreview } from './index'; // Import the type from the main component
+import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
+import MediaPreview from './MediaPreview'
+import { FileWithPreview } from './index' // Import the type from the main component
 
 // Define mock files for different states
 const mockFiles: FileWithPreview[] = [
   {
     name: 'mockfile.png',
-    preview: '/mockfile.png',
+    preview:
+      'https://images.pexels.com/photos/22185/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600',
     isValid: true,
     status: 'loading',
     lastModified: Date.now(),
@@ -22,7 +23,8 @@ const mockFiles: FileWithPreview[] = [
   },
   {
     name: 'mockfile.png',
-    preview: '/mockfile.png',
+    preview:
+      'https://images.pexels.com/photos/22185/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=600',
     isValid: true,
     status: 'success',
     url: 'https://via.placeholder.com/150',
@@ -52,7 +54,7 @@ const mockFiles: FileWithPreview[] = [
     text: () => Promise.resolve(''),
     bytes: () => Promise.resolve(new Uint8Array()), // Updated to return a Promise<Uint8Array>
   },
-];
+]
 
 // Define the meta for the component
 const meta: Meta<typeof MediaPreview> = {
@@ -68,10 +70,10 @@ const meta: Meta<typeof MediaPreview> = {
     onRemoveFile: { action: 'fileRemoved' },
     onCancelUpload: { action: 'uploadCancelled' },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof MediaPreview>;
+export default meta
+type Story = StoryObj<typeof MediaPreview>
 
 // Preloading state
 export const Preloading: Story = {
@@ -81,7 +83,7 @@ export const Preloading: Story = {
     onRemoveFile: fn(),
     onCancelUpload: fn(),
   },
-};
+}
 
 // Enabled/Success state
 export const EnabledSuccess: Story = {
@@ -91,7 +93,7 @@ export const EnabledSuccess: Story = {
     onRemoveFile: fn(),
     onCancelUpload: fn(),
   },
-};
+}
 
 // // Hover state (simulated with a decorator)
 // export const Hover: Story = {
@@ -117,7 +119,7 @@ export const Active: Story = {
   parameters: {
     pseudo: { active: true }, // Simulate active state
   },
-};
+}
 
 // Pressed state
 // export const Pressed: Story = {
@@ -153,7 +155,7 @@ export const Loading: Story = {
     onRemoveFile: fn(),
     onCancelUpload: fn(),
   },
-};
+}
 
 // Error state
 export const Error: Story = {
@@ -163,7 +165,7 @@ export const Error: Story = {
     onRemoveFile: fn(),
     onCancelUpload: fn(),
   },
-};
+}
 
 // Disabled state
 export const Disabled: Story = {
@@ -173,4 +175,4 @@ export const Disabled: Story = {
     onCancelUpload: fn(),
     disabled: true, // Disable the component
   },
-};
+}
