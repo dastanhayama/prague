@@ -4,6 +4,7 @@ import { useCallback, useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import UploadIcon from '@icons/General/upload-cloud-02.svg'
 import MediaPreview from './MediaPreview'
+import FeaturedIcon from '../FeaturedIcon'
 
 export interface MediaUploadProps {
   multiple: boolean
@@ -238,9 +239,7 @@ export default function MediaFileUpload({
     isDragActive || hovered ? 'border-brand-solid border-2' : 'border-secondary border'
   } ${disabled ? 'cursor-not-allowed bg-[#F9FAFB] border-none' : 'bg-primary'}`
 
-  const upload_icon_container_class = `flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-md p-[10px] border border-secondary mb-3`
-  const upload_icon_class = `w-[20px] h-[20px]`
-  const text_container_class = `flex flex-col gap-1`
+  const text_container_class = `flex flex-col gap-1 mt-3`
   const main_text_class = `font-semibold  text-sm leading-5 ${disabled ? 'text-[#98A2B3]' : 'text-[#A80B48]'}`
   const main_text_span_class = `font-normal text-[#475467]`
   const sub_text_class = `font-normal text-[#475467] text-[12px] leading-[18px]`
@@ -249,9 +248,7 @@ export default function MediaFileUpload({
     <>
       <div {...getRootProps()} className={container_class}>
         <input {...getInputProps()} disabled={disabled} />
-        <div className={upload_icon_container_class}>
-          <UploadIcon className={upload_icon_class} />
-        </div>
+        <FeaturedIcon size='md' icon={UploadIcon} type='modern'/>
         <div className={text_container_class}>
           <p className={main_text_class}>
             Click to upload <span className={main_text_span_class}>or drag and drop</span>
