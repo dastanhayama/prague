@@ -2,11 +2,13 @@ import { headers as getHeaders } from 'next/headers.js'
 import { getPayload } from 'payload'
 import React from 'react'
 import { fileURLToPath } from 'url'
-import MediaFileUpload from '@/components/MediaFileUpload'
+// import MediaFileUpload from '@/components/MediaFileUpload'
 // import ToastExample from '@/components/Toast/ToastExample'
-import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
+// import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
+// import BackgroundPatternDecorative from '@/components/BackgroundPatternDecorative'
 import config from '@/payload.config'
 import './globals.css'
+import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -20,13 +22,18 @@ export default async function HomePage() {
     <div className="min-h-screen flex flex-col items-center justify-center relative">
       {/* <h1 className="text-2xl font-bold p-6">Приложение с Toast-уведомлениями</h1> */}
       {/* <ToastExample /> */}
-      <MediaFileUpload 
-      multiple={true} // возможность загружать несколько файлов
-      accept={['image/png', 'image/jpeg', 'video/mpeg', 'video/mp4', 'video/mov']} // допустимые форматы
-      maxSize={10 * 1024 * 1024} // максимальный размер файла (10MB)
-      />
-
-      <IconUsageExamle />
+      {/* <MediaFileUpload
+        multiple={true} // возможность загружать несколько файлов
+        accept={['image/png', 'image/jpeg', 'video/mpeg', 'video/mp4', 'video/mov']} // допустимые форматы
+        maxSize={10 * 1024 * 1024} // максимальный размер файла (10MB)
+      /> */}
+      <EmptyStateUsage />
+      {/* <IconUsageExamle /> */}
+      {/* <BackgroundPatternDecorative background={true} size="md" type="circles" />
+      <BackgroundPatternDecorative background={true} size="md" type="grid" />
+      <BackgroundPatternDecorative background={true} size="md" type="grid-dot" />
+      <BackgroundPatternDecorative background={true} size="md" type="squares" />
+      <BackgroundPatternDecorative background={true} size="md" type="empty" /> */}
     </div>
   )
 }

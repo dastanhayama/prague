@@ -235,8 +235,8 @@ export default function MediaFileUpload({
 
   const acceptedFormats = formatAcceptedFormats(accept)
 
-  const container_class = `py-xl px-3xl rounded-xl text-center cursor-pointer max-w-[512px] w-full h-auto flex flex-col justify-start items-center hover:border-brand-solid hover:border-2 ${
-    isDragActive || hovered ? 'border-brand-solid border-2' : 'border-secondary border'
+  const container_class = `py-xl px-3xl rounded-xl text-center cursor-pointer max-w-[512px] w-full h-auto flex flex-col justify-start items-center hover:outline-brand-solid hover:outline-2 ${
+    isDragActive || hovered ? 'outline-brand-solid outline-2' : 'outline-secondary outline'
   } ${disabled ? 'cursor-not-allowed bg-[#F9FAFB] border-none' : 'bg-primary'}`
 
   const text_container_class = `flex flex-col gap-1 mt-3`
@@ -248,7 +248,7 @@ export default function MediaFileUpload({
     <>
       <div {...getRootProps()} className={container_class}>
         <input {...getInputProps()} disabled={disabled} />
-        <FeaturedIcon size='md' icon={UploadIcon} type='modern'/>
+        <FeaturedIcon size="md" icon={UploadIcon} type="modern" />
         <div className={text_container_class}>
           <p className={main_text_class}>
             Click to upload <span className={main_text_span_class}>or drag and drop</span>
