@@ -57,6 +57,11 @@
   --radius-4xl: 24px;
   --radius-full: 9999px;
   /* BACKGROUND-IMAGE */
+
+  /* Breakpoints */
+  --breakpoint-desktop: 1024px;
+  --breakpoint-mobile: 640px;
+  --breakpoint-tablet: 768px;
 }
 @layer utilities {
   .bg-empty {
