@@ -6,9 +6,10 @@ import { fileURLToPath } from 'url'
 // import ToastExample from '@/components/Toast/ToastExample'
 // import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
 // import BackgroundPatternDecorative from '@/components/BackgroundPatternDecorative'
+// import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
 import config from '@/payload.config'
 import './globals.css'
-import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
+import SectionLabel from '@/components/SectionLabel'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -27,13 +28,27 @@ export default async function HomePage() {
         accept={['image/png', 'image/jpeg', 'video/mpeg', 'video/mp4', 'video/mov']} // допустимые форматы
         maxSize={10 * 1024 * 1024} // максимальный размер файла (10MB)
       /> */}
-      <EmptyStateUsage />
+      {/* <EmptyStateUsage /> */}
       {/* <IconUsageExamle /> */}
       {/* <BackgroundPatternDecorative background={true} size="md" type="circles" />
       <BackgroundPatternDecorative background={true} size="md" type="grid" />
       <BackgroundPatternDecorative background={true} size="md" type="grid-dot" />
       <BackgroundPatternDecorative background={true} size="md" type="squares" />
       <BackgroundPatternDecorative background={true} size="md" type="empty" /> */}
+      <SectionLabel
+        size="sm"
+        tooltip={true}
+        required={true}
+        supportingText="Manage your team members here."
+        label="Team members"
+      />
+      <SectionLabel
+        size="md"
+        tooltip={true}
+        required={true}
+        supportingText="Manage your team members here."
+        label="Team members"
+      />
     </div>
   )
 }
