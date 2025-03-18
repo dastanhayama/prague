@@ -8,9 +8,10 @@ import { fileURLToPath } from 'url'
 // import BackgroundPatternDecorative from '@/components/BackgroundPatternDecorative'
 // import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
 // import SectionLabel from '@/components/SectionLabel'
+// import SectionHeader from '@/components/SectionHeader'
+import PageHeader from '@/components/PageHeader'
 import config from '@/payload.config'
 import './globals.css'
-import SectionHeader from '@/components/SectionHeader'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -21,7 +22,7 @@ export default async function HomePage() {
   const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative w-full">
+    <div className="min-h-screen flex flex-col items-center justify-start relative w-full">
       {/* <h1 className="text-2xl font-bold p-6">Приложение с Toast-уведомлениями</h1> */}
       {/* <ToastExample /> */}
       {/* <MediaFileUpload
@@ -49,19 +50,32 @@ export default async function HomePage() {
         required={true}
         supportingText="Manage your team members here."
         label="Team members"
-      /> */}
-      <div className='w-full'>
-      <SectionHeader
-        type="buttons"
-        tabs={false}
-        actions={true}
-        label="Team members"
-        supportingText="Manage your team members and their account permissions here."
-        dropdownIcon={true}
-        tooltip={true}
-        divider={true}
+      />
+      <div className="w-full">
+        <SectionHeader
+          type="buttons"
+          tabs={false}
+          actions={true}
+          label="Team members"
+          supportingText="Manage your team members and their account permissions here."
+          dropdownIcon={true}
+          tooltip={true}
+          divider={true}
         />
-        </div>
+      </div> */}
+      <div className="w-full h-[200vh]">
+        <PageHeader
+          type="simple"
+          banner={true}
+          actions={true}
+          search={true}
+          label="Team members"
+          centered={true}
+          collapse={true}
+          supportingText="Manage your team members and their account permissions here."
+          divider={true}
+        />
+      </div>
     </div>
   )
 }
