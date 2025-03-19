@@ -9,10 +9,10 @@ import { fileURLToPath } from 'url'
 // import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
 // import SectionLabel from '@/components/SectionLabel'
 // import SectionHeader from '@/components/SectionHeader'
-// import PageHeader from '@/components/PageHeader'
+// import AvatarUsageExample from '@/components/Avatar/AvatarUsageExample'
 import config from '@/payload.config'
 import './globals.css'
-import AvatarUsageExample from '@/components/Avatar/AvatarUsageExample'
+import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -64,20 +64,8 @@ export default async function HomePage() {
           divider={true}
         />
       </div> */}
-      {/* <div className="w-full h-[200vh]">
-        <PageHeader
-          type="simple"
-          banner={true}
-          actions={true}
-          search={true}
-          label="Team members"
-          centered={true}
-          collapse={true}
-          supportingText="Manage your team members and their account permissions here."
-          divider={true}
-        />
-      </div> */}
-      <AvatarUsageExample />
+     <PageHeaderUsage />
+      {/* <AvatarUsageExample /> */}
     </div>
   )
 }

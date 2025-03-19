@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import PageHeader from './index'; 
+import PageHeader from './index';
+import Avatar from '@/components/Avatar'; // Import your Avatar component
 
 const meta: Meta<typeof PageHeader> = {
   title: 'Components/PageHeader',
@@ -48,6 +49,7 @@ const meta: Meta<typeof PageHeader> = {
     collapse: true,
     banner: false,
     search: true,
+    avatar: null, // Default to null, but can be overridden in stories
   },
 };
 
@@ -67,6 +69,38 @@ export const Default: Story = {
     collapse: true,
     banner: false,
     search: true,
+    avatar: null, // No avatar by default
+  },
+  render: (args) => (
+    <div className="w-full h-[200vh]">
+      <PageHeader {...args} />
+    </div>
+  ),
+};
+
+// Story with Avatar
+export const WithAvatar: Story = {
+  args: {
+    type: 'avatar',
+    actions: true,
+    label: 'Olivia Rhye',
+    supportingText: 'olivia@gmail.com',
+    divider: true,
+    centered: true,
+    collapse: false,
+    banner: true,
+    search: true,
+    avatar: (
+      <Avatar
+        size="3xl"
+        contrastBorder
+        placeholder={false}
+        state="default"
+        statusIcon={true}
+        status="verified"
+        avatar="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fHww"
+      />
+    ),
   },
   render: (args) => (
     <div className="w-full h-[200vh]">
@@ -87,6 +121,7 @@ export const MobileView: Story = {
     collapse: true,
     banner: false,
     search: true,
+    avatar: null, // No avatar by default
   },
   parameters: {
     viewport: {
@@ -112,6 +147,7 @@ export const DesktopView: Story = {
     collapse: true,
     banner: false,
     search: true,
+    avatar: null, // No avatar by default
   },
   parameters: {
     viewport: {
