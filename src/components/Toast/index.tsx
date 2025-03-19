@@ -99,8 +99,8 @@ const Toast: React.FC<ToastProps> = ({
   const supportTextClass = "text-[14px] leading-[20px] font-normal text-[#475467]";
 
   // Button classes
-  const dismissButtonClass = "text-[14px] leading-[20px] font-semibold text-secondary-700 bg-primary px-lg py-md rounded-md border border-[#D0D5DD]";
-  const viewChangesButtonClass = "text-[14px] leading-[20px] font-semibold text-primary bg-[#101828] px-lg py-md rounded-md border border-[#101828]";
+  const dismissButtonClass = "text-[14px] leading-[20px] font-semibold text-secondary-700 bg-primary px-lg py-md rounded-md border border-[#D0D5DD] cursor-pointer";
+  const viewChangesButtonClass = "text-[14px] leading-[20px] font-semibold text-primary bg-[#101828] px-lg py-md rounded-md border border-[#101828] cursor-pointer";
 
   return (
     <div className={getToastStyles()}>
