@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import CloseIcon from '@icons/General/x-close.svg'
 import InfoIcon from '@icons/General/info-circle.svg'
 import SuccessIcon from '@icons/General/check-circle.svg'
+import FeaturedIcon from '../FeaturedIcon';
 
 export type ToastType = 'default' | 'brand' | 'info' | 'error' | 'warning' | 'success';
 
@@ -58,49 +59,27 @@ const Toast: React.FC<ToastProps> = ({
     switch (type) {
       case 'success':
         return (
-          <div className={`${iconContainerClass} border-fg-success-primary/10`}>
-            <div className={`${innerIconContainerClass} border-fg-success-primary/30`}>
-              <SuccessIcon className='w-5 h-5 [&>path]:stroke-fg-success-primary' />
-            </div>
-          </div>
+          <FeaturedIcon type="outline" color='success' size="md" icon={SuccessIcon} />
         );
       case 'error':
         return (
-          <div className={`${iconContainerClass} border-fg-error-primary/10`}>
-            <div className={`${innerIconContainerClass} border-fg-error-primary/30`}>
-              <InfoIcon className='w-5 h-5 [&>path]:stroke-fg-error-primary' />
-            </div>
-          </div>
+          <FeaturedIcon type="outline" color='error' size="md" icon={InfoIcon} />
         );
       case 'warning':
         return (
-          <div className={`${iconContainerClass} border-fg-warning-primary/10`}>
-            <div className={`${innerIconContainerClass} border-fg-warning-primary/30`}>
-              <InfoIcon className='w-5 h-5 [&>path]:stroke-fg-warning-primary' />
-            </div>
-          </div>
+          <FeaturedIcon type="outline" color='warning' size="md" icon={InfoIcon} />
         );
       case 'info':
         return (
-          <div className={`${iconContainerClass} border-fg-quaternary-500/10`}>
-            <div className={`${innerIconContainerClass} border-fg-quaternary-500/30`}>
-              <InfoIcon className='w-5 h-5 [&>path]:stroke-fg-quaternary-500' />
-            </div>
-          </div>
+          <FeaturedIcon type="outline" color='gray' size="md" icon={InfoIcon} />
         );
       case 'brand':
         return (
-          <div className={`${iconContainerClass} border-fg-brand-primary-600/10`}>
-            <div className={`${innerIconContainerClass} border-fg-brand-primary-600/30`}>
-              <InfoIcon className='w-5 h-5 [&>path]:stroke-fg-brand-primary-600' />
-            </div>
-          </div>
+          <FeaturedIcon type="outline" color='brand' size="md" icon={InfoIcon} />
         );
       default:
         return (
-          <div className="flex items-center justify-center w-[40px] h-[40px] bg-primary rounded-md p-[10px] border border-[#D0D5DD] z-10">
-            <InfoIcon className='w-5 h-5 [&>path]:stroke-fg-secondary-700' />
-          </div>
+          <FeaturedIcon type="modern" size="md" icon={InfoIcon} />
         );
     }
   };

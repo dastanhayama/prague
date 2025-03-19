@@ -4,15 +4,15 @@ import React from 'react'
 import { fileURLToPath } from 'url'
 // import MediaFileUpload from '@/components/MediaFileUpload'
 // import ToastExample from '@/components/Toast/ToastExample'
-// import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
+import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
 // import BackgroundPatternDecorative from '@/components/BackgroundPatternDecorative'
 // import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
 // import SectionLabel from '@/components/SectionLabel'
 // import SectionHeader from '@/components/SectionHeader'
 // import AvatarUsageExample from '@/components/Avatar/AvatarUsageExample'
+// import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
-import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -23,7 +23,7 @@ export default async function HomePage() {
   const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start relative w-full">
+    <div className="min-h-screen flex flex-col items-center justify-start relative w-full py-12">
       {/* <h1 className="text-2xl font-bold p-6">Приложение с Toast-уведомлениями</h1> */}
       {/* <ToastExample /> */}
       {/* <MediaFileUpload
@@ -32,7 +32,7 @@ export default async function HomePage() {
         maxSize={10 * 1024 * 1024} // максимальный размер файла (10MB)
       /> */}
       {/* <EmptyStateUsage /> */}
-      {/* <IconUsageExamle /> */}
+      <IconUsageExamle />
       {/* <BackgroundPatternDecorative background={true} size="md" type="circles" />
       <BackgroundPatternDecorative background={true} size="md" type="grid" />
       <BackgroundPatternDecorative background={true} size="md" type="grid-dot" />
@@ -64,7 +64,7 @@ export default async function HomePage() {
           divider={true}
         />
       </div> */}
-     <PageHeaderUsage />
+     {/* <PageHeaderUsage /> */}
       {/* <AvatarUsageExample /> */}
     </div>
   )

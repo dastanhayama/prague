@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 import FeaturedIcon from './'; // Adjust the import path as necessary
 import InfoIcon from '@icons/General/info-circle.svg'; 
 
@@ -14,53 +13,75 @@ const meta = {
   argTypes: {
     type: {
       control: { type: 'select' },
-      options: ['glass', 'light', 'dark', 'modern'],
+      options: ['glass', 'light', 'dark', 'modern', 'outline'],
     },
     size: {
       control: { type: 'select' },
       options: ['sm', 'md', 'lg', 'xl'],
     },
+    color: {
+      control: { type: 'select' },
+      options: ['brand', 'gray', 'error', 'warning', 'success'],
+    },
     icon: {
       control: { type: 'object' }, // You can customize this control as needed
     },
   },
-  args: {  },
+  args: { 
+    type: 'modern',
+    size: 'md',
+    color: 'brand',
+    icon: InfoIcon,
+  },
 } satisfies Meta<typeof FeaturedIcon>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Define a primary story for the FeaturedIcon component
 
 
 // Additional stories for different configurations
-export const ModernSmall: Story = {
-    args: {
-      type: 'modern',
-      size: 'sm',
-      icon: InfoIcon,
-    },
-};
-export const ModernMedium: Story = {
-    args: {
-      type: 'modern',
-      size: 'md',
-      icon: InfoIcon,
-    },
-  };
-
-export const ModernLarge: Story = {
+export const Modern: Story = {
   args: {
     type: 'modern',
-    size: 'lg',
+    size: 'md',
+    color: 'brand',
     icon: InfoIcon,
   },
 };
 
-export const ModernExtraLarge: Story = {
+export const Light: Story = {
   args: {
-    type: 'modern',
-    size: 'xl',
+    type: 'light',
+    size: 'md',
+    color: 'brand',
+    icon: InfoIcon,
+  },
+};
+
+export const Dark: Story = {
+  args: {
+    type: 'dark',
+    size: 'md',
+    color: 'brand',
+    icon: InfoIcon,
+  },
+};
+
+export const Glass: Story = {
+  args: {
+    type: 'glass',
+    size: 'md',
+    color: 'brand',
+    icon: InfoIcon,
+  },
+};
+
+export const Outline: Story = {
+  args: {
+    type: 'outline',
+    size: 'md',
+    color: 'brand',
     icon: InfoIcon,
   },
 };

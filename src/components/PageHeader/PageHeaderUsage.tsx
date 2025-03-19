@@ -24,7 +24,7 @@ const PageHeaderUsage = () => {
       search={true}
       label="Olivia Rhye"
       centered={true}
-      collapse={false}
+      collapse={true}
       supportingText="olivia@gmail.com"
       divider={true}
       avatar={avatar}
