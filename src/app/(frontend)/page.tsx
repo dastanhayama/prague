@@ -4,7 +4,7 @@ import React from 'react'
 import { fileURLToPath } from 'url'
 // import MediaFileUpload from '@/components/MediaFileUpload'
 // import ToastExample from '@/components/Toast/ToastExample'
-// import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
+import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
 // import BackgroundPatternDecorative from '@/components/BackgroundPatternDecorative'
 // import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
 // import SectionLabel from '@/components/SectionLabel'
@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
+import Dot from '@/components/Dot'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -66,7 +67,14 @@ export default async function HomePage() {
       </div> */}
      {/* <PageHeaderUsage /> */}
       {/* <AvatarUsageExample /> */}
-      
+      <div className='flex items-start gap-4'>
+        <Dot size='sm' outline/>
+        <Dot size='md' outline/>
+        <Dot size='lg' outline/>
+        <Dot size='sm'color='#ecbf28'/>
+        <Dot size='md' color='#ecbf28'/>
+        <Dot size='lg' color='#ecbf28'/>
+      </div>
     </div>
   )
 }
