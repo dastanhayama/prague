@@ -4,7 +4,7 @@ import React from 'react'
 import { fileURLToPath } from 'url'
 // import MediaFileUpload from '@/components/MediaFileUpload'
 // import ToastExample from '@/components/Toast/ToastExample'
-import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
+// import IconUsageExamle from '@/components/FeaturedIcon/IconUsageExamle'
 // import BackgroundPatternDecorative from '@/components/BackgroundPatternDecorative'
 // import EmptyStateUsage from '@/components/EmptyState/EmptyStateUsage'
 // import SectionLabel from '@/components/SectionLabel'
@@ -32,7 +32,7 @@ export default async function HomePage() {
         maxSize={10 * 1024 * 1024} // максимальный размер файла (10MB)
       /> */}
       {/* <EmptyStateUsage /> */}
-      <IconUsageExamle />
+      {/* <IconUsageExamle /> */}
       {/* <BackgroundPatternDecorative background={true} size="md" type="circles" />
       <BackgroundPatternDecorative background={true} size="md" type="grid" />
       <BackgroundPatternDecorative background={true} size="md" type="grid-dot" />
@@ -66,6 +66,7 @@ export default async function HomePage() {
       </div> */}
      {/* <PageHeaderUsage /> */}
       {/* <AvatarUsageExample /> */}
+      
     </div>
   )
 }
