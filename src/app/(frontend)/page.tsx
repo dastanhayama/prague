@@ -13,7 +13,9 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
-import NavItemBaseUsage from '@/components/NavItemBase/NavItemBaseUsage'
+// import AvatarLabelGroupUsage from '@/components/AvatarLabelGroup/AvatarLabelGroupUsage'
+// import NavAccountCard from '@/components/NavAccountCard'
+// import NavItemBaseUsage from '@/components/NavItemBase/NavItemBaseUsage'
 // import BadgeUsageExample from '@/components/Badge/BadgeUsageExample'
 
 export default async function HomePage() {
@@ -69,8 +71,14 @@ export default async function HomePage() {
      {/* <PageHeaderUsage /> */}
       {/* <AvatarUsageExample /> */}
       {/* <BadgeUsageExample /> */}
-      <NavItemBaseUsage />
+      {/* <NavItemBaseUsage /> */}
+      {/* <AvatarLabelGroupUsage /> */}
+      {/* <div className='flex flex-col gap-4'>
+
+      <NavAccountCard type='card'/>
+      <NavAccountCard type='simple'/>
       
+      </div> */}
     </div>
   )
 }
