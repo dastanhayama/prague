@@ -1,71 +1,48 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import NavAccountCard from './index'; // Adjust the import path as needed
+import NavAccountCard from './index';
 
-// Define the meta information for Storybook
 const meta = {
-  title: 'Components/NavAccountCard', // Title in Storybook UI
-  component: NavAccountCard, // Component being documented
+  title: 'Components/NavAccountCard',
+  component: NavAccountCard,
   parameters: {
-    layout: 'centered', // Center the component in the Canvas
+    layout: 'centered',
   },
-  tags: ['autodocs'], // Enable autodocs
+  tags: ['autodocs'],
   argTypes: {
     type: {
-      control: { type: 'select' }, // Allow selection between 'simple' and 'card'
+      control: { type: 'select' },
       options: ['simple', 'card'],
     },
     open: {
-      control: { type: 'boolean' }, // Allow toggling the `open` state
+      control: { type: 'boolean' },
     },
   },
 } satisfies Meta<typeof NavAccountCard>;
 
 export default meta;
 
-// Define the type for the story
 type Story = StoryObj<typeof meta>;
 
-
-
+// Simple type story (always uses LogOutIcon)
 export const Simple: Story = {
   args: {
-    type: 'simple', // Set the type to 'simple'
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'This is the `simple` type of the NavAccountCard component with the `open` state set to `true`.',
-      },
-    },
+    type: 'simple',
+    open: false, // ButtonUtility will get state="default"
   },
 };
 
-// Story for the 'card' type with open=false
+// Card type in closed state (default button state)
 export const CardClosed: Story = {
   args: {
-    type: 'card', // Set the type to 'card'
-    open: false, // Default state is closed
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'This is the `card` type of the NavAccountCard component with the `open` state set to `false`.',
-      },
-    },
+    type: 'card',
+    open: false, // ButtonUtility will get state="default"
   },
 };
 
-// Story for the 'card' type with open=true
+// Card type in open state (hover button state)
 export const CardOpen: Story = {
   args: {
-    type: 'card', // Set the type to 'card'
-    open: true, // State is open
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'This is the `card` type of the NavAccountCard component with the `open` state set to `true`.',
-      },
-    },
+    type: 'card',
+    open: true, // ButtonUtility will get state="hover"
   },
 };

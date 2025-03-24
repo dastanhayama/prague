@@ -13,7 +13,8 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
-import MenuItemUsage from '@/components/NavAccountCard/MenuItemUsage'
+import ButtonUtilityUsage from '@/components/ButtonUtility/ButtonUtilityUsage'
+// import MenuItemUsage from '@/components/NavAccountCard/MenuItemUsage'
 // import AvatarLabelGroupUsage from '@/components/AvatarLabelGroup/AvatarLabelGroupUsage'
 // import NavAccountCard from '@/components/NavAccountCard'
 // import NavItemBaseUsage from '@/components/NavItemBase/NavItemBaseUsage'
@@ -80,7 +81,8 @@ export default async function HomePage() {
       <NavAccountCard type='simple'/>
       
       </div> */}
-      <MenuItemUsage />
+      {/* <MenuItemUsage /> */}
+      <ButtonUtilityUsage />
       
     </div>
   )

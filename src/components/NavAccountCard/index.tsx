@@ -4,6 +4,7 @@ import Avatar from '../Avatar';
 import AvatarLabelGroup from '../AvatarLabelGroup';
 import ChevronSelectorVerticalIcon from '@icons/Arrows/chevron-selector-vertical.svg';
 import LogOutIcon from '@icons/General/log-out-01.svg'
+import ButtonUtility from '../ButtonUtility';
 // Define the props type
 interface NavAccountCardProps {
   type?: 'simple' | 'card';
@@ -23,7 +24,6 @@ const NavAccountCard: React.FC<NavAccountCardProps> = ({ type = 'simple', open: 
 
   const iconContainerClasses = `
     w-[32px] h-[32px] flex items-center justify-center rounded-sm absolute ${type === "card" ? 'top-[6px] right-[6px]' : 'top-[10px] right-0'}
-    ${isOpen ? 'bg-[#F9FAFB] shadow-xs' : 'bg-primary'}
   `;
 
   const iconClasses = `
@@ -58,9 +58,9 @@ const NavAccountCard: React.FC<NavAccountCardProps> = ({ type = 'simple', open: 
       />
       <div className={iconContainerClasses}>
         {type === 'card' ? (
-            <ChevronSelectorVerticalIcon className={iconClasses} />
-        ) : (
-            <LogOutIcon className={iconClasses} />
+                  <ButtonUtility icon={ChevronSelectorVerticalIcon} size='sm' hierarchy='tertiary' state={isOpen ? 'hover' : 'default'}/>
+                ) : (
+          <ButtonUtility icon={LogOutIcon} size='sm' hierarchy='tertiary' state={isOpen ? 'hover' : 'default'}/>
         )}
       </div>
     </div>
