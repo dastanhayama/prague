@@ -13,7 +13,6 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
-import MenuItem from '@/components/NavAccountCard/MenuItem'
 import MenuItemUsage from '@/components/NavAccountCard/MenuItemUsage'
 // import AvatarLabelGroupUsage from '@/components/AvatarLabelGroup/AvatarLabelGroupUsage'
 // import NavAccountCard from '@/components/NavAccountCard'
@@ -82,6 +81,7 @@ export default async function HomePage() {
       
       </div> */}
       <MenuItemUsage />
+      
     </div>
   )
 }

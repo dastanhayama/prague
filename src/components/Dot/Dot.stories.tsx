@@ -10,15 +10,29 @@ const meta: Meta<typeof Dot> = {
     size: {
       control: { type: 'select' },
       options: ['sm', 'md', 'lg'],
+      defaultValue: 'md',
     },
     outline: {
       control: { type: 'boolean' },
+      defaultValue: false,
     },
     color: {
-      control: { type: 'color' },
-    },
-    outlineColor: {
-      control: { type: 'color' },
+      control: { type: 'select' },
+      options: [
+        'gray',
+        'brand',
+        'error',
+        'warning',
+        'success',
+        'gray-blue',
+        'blue-light',
+        'blue',
+        'indigo',
+        'purple',
+        'pink',
+        'orange',
+      ],
+      defaultValue: 'success',
     },
   },
 }
@@ -28,32 +42,68 @@ export default meta
 // Define the type for the stories
 type Story = StoryObj<typeof Dot>
 
-// Story for Dot with outline=false
+// Base story with default props
 export const Default: Story = {
   args: {
     size: 'md',
     outline: false,
-    color: '#17B26A', // Default green color
-    outlineColor: '#DCFAE6', // Default outline color
+    color: 'success',
   },
 }
 
-// Story for Dot with outline=true
+// Story with outline
 export const WithOutline: Story = {
   args: {
     size: 'md',
     outline: true,
-    color: '#17B26A', // Default green color
-    outlineColor: '#DCFAE6', // Default outline color
+    color: 'success',
   },
 }
 
-// Story for Dot with custom colors
-export const CustomColors: Story = {
+// Story showing all color variants
+export const AllColors: Story = {
+  render: (args) => (
+    <div className="flex flex-col gap-4">
+      {(
+        [
+          'gray',
+          'brand',
+          'error',
+          'warning',
+          'success',
+          'gray-blue',
+          'blue-light',
+          'blue',
+          'indigo',
+          'purple',
+          'pink',
+          'orange',
+        ] as const
+      ).map((color) => (
+        <div key={color} className="flex items-center gap-2">
+          <Dot {...args} color={color} />
+          <span className="text-sm capitalize">{color}</span>
+        </div>
+      ))}
+    </div>
+  ),
   args: {
-    size: 'lg',
+    size: 'md',
     outline: false,
-    color: '#faddd6', // Custom background color (e.g., orange)
-    outlineColor: '#ecbf28', // Custom outline color (e.g., yellow)
+  },
+}
+
+// Story showing different sizes
+export const Sizes: Story = {
+  render: (args) => (
+    <div className="flex items-center gap-4">
+      <Dot {...args} size="sm" />
+      <Dot {...args} size="md" />
+      <Dot {...args} size="lg" />
+    </div>
+  ),
+  args: {
+    outline: true,
+    color: 'brand',
   },
 }

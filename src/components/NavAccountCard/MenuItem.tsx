@@ -1,6 +1,7 @@
 import React from 'react';
 import Avatar from '../Avatar';
 import AvatarLabelGroup from '../AvatarLabelGroup';
+import Checkbox from '@/components/Checkbox'
 
 
 
@@ -76,14 +77,7 @@ const avatar = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=5
         }
       />
       <div className={iconContainerClasses}>
-      <label className="flex items-center cursor-pointer">
-      <input
-        type="radio"
-        name="custom-radio"
-        className="appearance-none w-4 h-4 rounded-full border border-[#D0D5DD] checked:border-[#C00C53] checked:border-[5px] checked:bg-primary transition-colors duration-200"
-      />
-      <span className="absolute w-1.5 h-1.5 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2 opacity-0 checked:opacity-100 pointer-events-none" />
-    </label>
+        <Checkbox size='sm' type='radio'/>
       </div> 
             </>
         )}
