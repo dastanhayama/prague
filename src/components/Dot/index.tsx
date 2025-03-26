@@ -7,8 +7,8 @@ type DotColor =
   | 'error'
   | 'warning'
   | 'success'
-  | 'gray-blue'
-  | 'blue-light'
+  | 'gray blue'
+  | 'blue light'
   | 'blue'
   | 'indigo'
   | 'purple'
@@ -47,8 +47,8 @@ const Dot: React.FC<DotProps> = ({
     error: 'bg-utility-error-500 outline-utility-error-200',
     warning: 'bg-utility-warning-500 outline-utility-warning-200',
     success: 'bg-utility-success-500 outline-utility-success-200',
-    'gray-blue': 'bg-utility-gray-blue-500 outline-utility-gray-blue-200',
-    'blue-light': 'bg-utility-blue-light-500 outline-utility-blue-light-200',
+    'gray blue': 'bg-utility-gray-blue-500 outline-utility-gray-blue-200',
+    'blue light': 'bg-utility-blue-light-500 outline-utility-blue-light-200',
     blue: 'bg-utility-blue-500 outline-utility-blue-200',
     indigo: 'bg-utility-indigo-500 outline-utility-indigo-200',
     purple: 'bg-utility-purple-500 outline-utility-purple-200',
