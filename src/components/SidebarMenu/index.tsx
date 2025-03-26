@@ -21,6 +21,14 @@ export interface SidebarMenuProps {
 }
 
 const SidebarMenu: React.FC<SidebarMenuProps> = ({ docs, header, footer }) => {
+  // CSS classes
+  const sidebarClasses = 'h-screen w-[280px] max-w-[280px] fixed left-0 top-0 p-xs'
+  const containerClasses = 'flex flex-col bg-primary border border-[#EAECF0] rounded-xl w-full h-full'
+  const headerClasses = 'flex items-center px-3xl py-2xl w-auto h-auto'
+  const navContentClasses = 'flex-1 overflow-y-auto px-xl'
+  const dividerClasses = 'h-[1px] bg-[#EAECF0] px-2xl my-md'
+  const footerClasses = 'p-xl'
+
   // Sort and memoize the menu items to prevent unnecessary re-renders
   const sortedMenuItems = useMemo(() => {
     return [...docs].sort((a, b) => a.order - b.order)
@@ -42,15 +50,15 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ docs, header, footer }) => {
   }, [sortedMenuItems])
 
   return (
-    <div className="h-screen w-[280px] max-w-[280px]  fixed left-0 top-0 p-xs">
-      <div className="flex flex-col bg-primary  border border-[#EAECF0] rounded-xl w-full h-full">
+    <div className={sidebarClasses}>
+      <div className={containerClasses}>
         {/* Header with logo and company name */}
-        <div className="flex items-center px-3xl py-2xl w-auto h-auto">
+        <div className={headerClasses}>
           {header}
         </div>
 
         {/* Navigation sections */}
-        <div className="flex-1 overflow-y-auto px-xl">
+        <div className={navContentClasses}>
           {groupedMenuItems.map((group, groupIndex) => (
             <div key={groupIndex}>
               {group.map((item) => {
@@ -65,14 +73,14 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ docs, header, footer }) => {
                 )
               })}
               {groupIndex < groupedMenuItems.length - 1 && (
-                <div className="h-[1px] bg-[#EAECF0] px-2xl my-md"></div>
+                <div className={dividerClasses}></div>
               )}
             </div>
           ))}
         </div>
 
         {/* Footer with account card */}
-        <div className="p-xl">
+        <div className={footerClasses}>
           {footer}
         </div>
       </div>
