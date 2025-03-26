@@ -18,7 +18,7 @@ const NavAccountCard: React.FC<NavAccountCardProps> = ({ type = 'simple', open: 
   // Tailwind classes as variables
   const containerClasses = `
     flex items-start justify-between  
-    desktop:w-[280px] w-[256px] relative
+    desktop:max-w-[280px] max-w-[256px] w-full relative
     ${type === 'card' ? 'cursor-pointer bg-primary border border-secondary p-lg  rounded-xl ' : 'bg-transparent px-md pb-0 pt-2xl border-t border-secondary  rounded-none'}
   `;
 

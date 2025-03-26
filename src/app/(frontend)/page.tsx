@@ -13,12 +13,13 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
-import ButtonUtilityUsage from '@/components/ButtonUtility/ButtonUtilityUsage'
+import SidebarUsage from '@/components/SidebarMenu/SidebarUsage'
+// import ButtonUtilityUsage from '@/components/ButtonUtility/ButtonUtilityUsage'
 // import MenuItemUsage from '@/components/NavAccountCard/MenuItemUsage'
 // import AvatarLabelGroupUsage from '@/components/AvatarLabelGroup/AvatarLabelGroupUsage'
 // import NavAccountCard from '@/components/NavAccountCard'
 // import NavItemBaseUsage from '@/components/NavItemBase/NavItemBaseUsage'
-import BadgeUsageExample from '@/components/Badge/BadgeUsageExample'
+// import BadgeUsageExample from '@/components/Badge/BadgeUsageExample'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -72,7 +73,7 @@ export default async function HomePage() {
       </div> */}
      {/* <PageHeaderUsage /> */}
       {/* <AvatarUsageExample /> */}
-      <BadgeUsageExample />
+      {/* <BadgeUsageExample /> */}
       {/* <NavItemBaseUsage /> */}
       {/* <AvatarLabelGroupUsage /> */}
       {/* <div className='flex flex-col gap-4'>
@@ -83,7 +84,7 @@ export default async function HomePage() {
       </div> */}
       {/* <MenuItemUsage /> */}
       {/* <ButtonUtilityUsage /> */}
-      
+        <SidebarUsage />
     </div>
   )
 }
