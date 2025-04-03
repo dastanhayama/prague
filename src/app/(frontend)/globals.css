@@ -129,3 +129,51 @@
     background-color: var(--color-primary);
   }
 }
+
+/* Verification Input Classes */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  gap: 12px; /* Added gap between characters */
+}
+
+.character {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  max-height: 80px;
+  border: 2px solid transparent;
+  outline: 1px solid #d0d5dd;
+  border-radius: 10px;
+  font-size: 48px;
+  line-height: 60px;
+  background-color: #ffffff;
+  color: #d0d5dd;
+}
+
+.character--inactive {
+  background-color: white;
+  color: #d0d5dd; /* Optional: gray text for inactive state */
+}
+
+.character--selected {
+  position: relative;
+  color: #d0d5dd;
+  outline: #61646c solid 2px;
+}
+
+.character--filled {
+  background-color: #ffffff;
+  outline: #61646c solid 2px;
+  color: #344054;
+}
+.character:focus {
+  outline: none;
+  border: 2px solid transparent;
+  box-shadow: none;
+}

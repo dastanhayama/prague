@@ -13,7 +13,7 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
-import SidebarUsage from '@/components/SidebarMenu/SidebarUsage'
+// import SidebarUsage from '@/components/SidebarMenu/SidebarUsage'
 // import ButtonUtilityUsage from '@/components/ButtonUtility/ButtonUtilityUsage'
 // import MenuItemUsage from '@/components/NavAccountCard/MenuItemUsage'
 // import AvatarLabelGroupUsage from '@/components/AvatarLabelGroup/AvatarLabelGroupUsage'
@@ -84,7 +84,7 @@ export default async function HomePage() {
       </div> */}
       {/* <MenuItemUsage /> */}
       {/* <ButtonUtilityUsage /> */}
-        <SidebarUsage />
+        {/* <SidebarUsage /> */}
     </div>
   )
 }
