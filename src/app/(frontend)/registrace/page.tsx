@@ -1,7 +1,7 @@
 // app/page.tsx
 'use client'
 
-import { useState, useEffect} from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import Logo from '@/components/Logo'
 import HorizontalTabs from '@/components/HorizontalTabs'
 import TabButtonBase from '@/components/TabButtonBase'
@@ -20,19 +20,23 @@ import Building04Icon from '@icons/General/building-04.svg'
 import CheckCircleIcon from '@icons/General/check-circle.svg'
 import FeaturedIcon from '@/components/FeaturedIcon'
 import confetti from 'canvas-confetti'
-
-
+import { validatePhoneNumber } from './validatePhone'
+import { signInAction, sendOtpAction, verifyOtpAction, registerUserAction  } from '@/actions/auth'
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>('')
   const [signinData, setSigninData] = useState<string>('')
   const [otpCode, setOtpCode] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [selectedServiceType, setSelectedServiceType] = useState<string | null>("Holka na sex");
+  const [selectedServiceType, setSelectedServiceType] = useState<string | null>('Holka na sex')
   const [activeTab, setActiveTab] = useState('sign-in') // 'sign-in' or 'sign-up'
   const [steps, setSteps] = useState<string>('auth') // 'auth', 'otp', 'who', 'password', 'confetti'
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+  const [resendCooldown, setResendCooldown] = useState(0)
 
-  const shootConfetti = () => {   
+
+  const shootConfetti = () => {
     confetti({
       particleCount: 400,
       spread: 500, // full screen
@@ -42,62 +46,174 @@ export default function LoginPage() {
       // ticks: 200, // duration, more ticks = lasts longer
       // scalar: 1, // slightly larger particles
       // colors: ['#C00C53', '#00C896', '#FFD700', '#008CFF'],
-    });
-  };
-  
-  // Inside your component
-useEffect(() => {
-  if (steps === 'confetti') {
-    const timeout1 = setTimeout(() => {
-      shootConfetti()
-    }, 500)
-
-    const timeout2 = setTimeout(() => {
-      shootConfetti()
-    }, 1000)
-
-    return () => {
-      clearTimeout(timeout1)
-      clearTimeout(timeout2)
-    }
+    })
   }
-}, [steps])
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+  
+    const interval = setInterval(() => {
+      setResendCooldown((prev) => prev - 1)
+    }, 1000)
+  
+    return () => clearInterval(interval)
+  }, [resendCooldown])
+  
+
+  // Inside your component
+  useEffect(() => {
+    if (steps === 'confetti') {
+      const timeout1 = setTimeout(() => {
+        shootConfetti()
+      }, 500)
+
+      const timeout2 = setTimeout(() => {
+        shootConfetti()
+      }, 1000)
+
+      return () => {
+        clearTimeout(timeout1)
+        clearTimeout(timeout2)
+      }
+    }
+  }, [steps])
+  const handleResendOtp = () => {
+    if (resendCooldown > 0) return
+  
+    startTransition(async () => {
+      const response = await sendOtpAction({ phoneNumber })
+  
+      if (!response.success) {
+        setErrorMessage(response.error || 'Nepodařilo se odeslat kód znovu.')
+        return
+      }
+  
+      setErrorMessage(null)
+      setResendCooldown(120)
+    })
+  }
+  
   // Handle continue button click based on current step and active tab
-  const handleContinueClick = () => {
+  const handleContinueClick = async () => {
     if (activeTab === 'sign-in') {
-      // For sign-in, redirect to dashboard directly
-      console.log('Redirect to dashboard with credentials:', signinData)
-      // Here you would typically call your authentication API
-      // and then redirect to dashboard
-    } else {
+      const trimmed = signinData.trim()
+  
+      if (!trimmed) {
+        setErrorMessage('Zadejte telefonní číslo nebo uživatelské jméno')
+        return
+      }
+      
+      setErrorMessage(null)
+      startTransition(async () => {
+        const response = await signInAction({ identifier: trimmed })
+      
+        if (!response.success) {
+          setErrorMessage(response.error || 'Neznámá chyba')
+          return
+        }
+        setErrorMessage(null)
+        console.log('User authenticated:', response.user)
+        // continue...
+      })}
+       else {
       // For sign-up, move through the steps
       switch (steps) {
         case 'auth':
-          if (phoneNumber.trim()) {
-            setSteps('otp')
-            // Here you would typically call API to send OTP
-            console.log('Sending OTP to:', phoneNumber)
+          const phoneError = validatePhoneNumber(phoneNumber)
+
+          if (phoneError) {
+            setErrorMessage(phoneError)
+            return
           }
+          
+          setErrorMessage(null)
+          
+          startTransition(async () => {
+            const response = await sendOtpAction({ phoneNumber })
+          
+            if (!response.success) {
+              setErrorMessage(response.error || 'Chyba při odesílání kódu')
+              return
+            }
+          
+            setSteps('otp')
+            setResendCooldown(60) // Set cooldown for resend button
+          })          
           break
         case 'otp':
-          if (otpCode.trim()) {
-            setSteps('who')
-            console.log('OTP verified:', otpCode)
+          case 'otp': {
+            if (!/^\d{4}$/.test(otpCode)) {
+              setErrorMessage('Kód musí být čtyřmístný')
+              return
+            }
+          
+            setErrorMessage(null)
+          
+            startTransition(async () => {
+              const response = await verifyOtpAction({
+                phoneNumber,
+                otpCode,
+              })
+          
+              if (!response.success) {
+                setErrorMessage(response.error || 'Neznámá chyba při ověření kódu')
+                return
+              }
+          
+              setSteps('who')
+            })
+          
+            break
           }
-          break
+          
         case 'who':
-          if (selectedServiceType) {
-            setSteps('password');
-            console.log('Selected service type:', selectedServiceType);
+          case 'who': {
+            if (!selectedServiceType) {
+              setErrorMessage('Vyberte typ služby')
+              return
+            }
+          
+            setErrorMessage(null)
+            setSteps('password')
+            break
           }
-          break;
-        case 'password':
-          if (password) {
-            setSteps('confetti')
-            console.log('Account created!')
-            // Here you would typically call API to create account
-          }
-          break
+          
+          case 'password': {
+            if (password.length < 8) {
+              setErrorMessage('Heslo musí mít alespoň 8 znaků.')
+              return
+            }
+          
+            if (!/\d/.test(password)) {
+              setErrorMessage('Heslo musí obsahovat alespoň jedno číslo.')
+              return
+            }
+          
+            if (!/[a-zA-Z]/.test(password)) {
+              setErrorMessage('Heslo musí obsahovat alespoň jedno písmeno.')
+              return
+            }
+          
+            setErrorMessage(null)
+          
+            startTransition(async () => {
+              const response = await registerUserAction({
+                phoneNumber,
+                password,
+                serviceType: selectedServiceType!,
+              })
+            
+              if (!response.success) {
+                setErrorMessage(response.error || 'Registrace selhala')
+                return
+              }
+            
+              console.log('✅ Account successfully created')
+              setSteps('confetti')
+            })
+            
+          
+            break
+          }          
         case 'confetti':
           // Final step - redirect to dashboard
           console.log('Registration complete, redirecting to dashboard')
@@ -123,36 +239,61 @@ useEffect(() => {
         setSteps('password')
         break
     }
-
   }
   // Add this with your other handler functions
-const handleTypeClick = (text: string) => {
-  setSelectedServiceType(prev => prev === text ? null : text);
-};
+  const handleTypeClick = (text: string) => {
+    setSelectedServiceType((prev) => (prev === text ? null : text))
+  }
 
+  // Container classes
+const containerClasses = `flex justify-center ${steps === 'confetti' ? 'items-center' : 'items-start'} min-h-screen w-full overflow-hidden relative`;
 
+// Main content classes
+const mainContentClasses = "bg-transparent pt-6xl w-full max-w-[375px] px-xl";
 
-  return (
-    <div className={`flex justify-center ${steps === 'confetti' ? 'items-center' : 'items-start'} min-h-screen w-full overflow-hidden relative`}>
-      {steps !== 'confetti' ? (
-        <div className="bg-transparent pt-6xl w-full max-w-[375px] px-xl">
+// Header classes
+const headerClasses = "flex flex-col items-start mb-4xl relative";
+const logoContainerClasses = "relative";
+const backgroundPatternClasses = "absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1]";
+const titleClasses = "text-[#101828] text-[24px] leading-[32px] font-semibold mb-xs";
+const subtitleClasses = "text-[#475467] text-[16px] leading-[24px]";
+
+// Auth step classes
+const authTabContainerClasses = "mb-4xl";
+const inputFieldClasses = "mb-3xl";
+const buttonContainerClasses = "mb-4xl";
+const footerTextClasses = "text-center text-[12px] leading-[18px]";
+const footerLinkClasses = "text-[#C00C53] underline";
+
+// OTP step classes
+const resendCodeClasses = "text-[14px] leading-[20px] text-[#475467] text-center mb-4xl inline-flex justify-center items-center gap-1";
+
+// Confetti step classes
+const confettiContentClasses = "flex flex-col gap-0 max-w-[375px] w-full items-center py-0 px-xl";
+const confettiTitleClasses = "mt-2xl mb-xs text-[#101828] text-[24px] leading-[32px] font-semibold text-center";
+const confettiSubtitleClasses = "text-[#475467] text-[16px] leading-[24px] text-center";
+const confettiButtonContainerClasses = "w-full mt-3xl tablet:mt-3xl fixed bottom-3xl left-0 right-0 px-xl tablet:relative tablet:bottom-auto tablet:left-auto tablet:right-auto tablet:px-0";
+
+return (
+  <div className={containerClasses}>
+    {steps !== 'confetti' ? (
+      <div className={mainContentClasses}>
         {/* Header */}
-        <div className="flex flex-col items-start mb-4xl relative">
-          <div className="relative">
-          <Logo type="logomark" brand="business" size="md" className="mb-2xl" />
-          {/* Position the background relative to the logo */}
-          <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1]">
-            <BackgroundPatternDecorative type="squares" size="md" background />
+        <div className={headerClasses}>
+          <div className={logoContainerClasses}>
+            <Logo type="logomark" brand="business" size="md" className="mb-2xl" />
+            <div className={backgroundPatternClasses}>
+              <BackgroundPatternDecorative type="squares" size="md" background />
+            </div>
           </div>
-        </div>          
-        <h2 className="text-[#101828] text-[24px] leading-[32px] font-semibold mb-xs">
+          <h2 className={titleClasses}>
             {steps === 'auth' && 'Vítejte'}
             {steps === 'otp' && 'Ověření telefonního čísla'}
             {steps === 'who' && 'Kdo jste?'}
             {steps === 'password' && 'Vytvořte si heslo'}
             {steps === 'confetti' && 'Registrace dokončena!'}
           </h2>
-          <p className="text-[#475467] text-[16px] leading-[24px]">
+          <p className={subtitleClasses}>
             {steps === 'auth' && 'Přihlaste se nebo se zaregistrujte.'}
             {steps === 'otp' && 'Zadejte čtyřmístný kód, který jsme vám zaslali na číslo '}
             {steps === 'otp' && phoneNumber && (
@@ -169,16 +310,14 @@ const handleTypeClick = (text: string) => {
         {steps === 'auth' && (
           <div className="flex flex-col gap-0">
             {/* Login Tabs */}
-            <div className="mb-4xl">
+            <div className={authTabContainerClasses}>
               <HorizontalTabs size="sm" type="button white border" fullWidth>
                 <TabButtonBase
                   current={activeTab === 'sign-in'}
                   type="button white"
                   size="sm"
                   fullWidth
-                  onClick={() => {
-                    setActiveTab('sign-in')
-                  }}
+                  onClick={() => setActiveTab('sign-in')}
                 >
                   <span>Přihlásit se</span>
                 </TabButtonBase>
@@ -187,9 +326,7 @@ const handleTypeClick = (text: string) => {
                   type="button white"
                   size="sm"
                   fullWidth
-                  onClick={() => {
-                    setActiveTab('sign-up')
-                  }}
+                  onClick={() => setActiveTab('sign-up')}
                 >
                   <span>Registrovat se</span>
                 </TabButtonBase>
@@ -197,39 +334,55 @@ const handleTypeClick = (text: string) => {
             </div>
 
             {/* Phone Input */}
-            <div className="mb-3xl">
+            <div className={inputFieldClasses}>
               {activeTab === 'sign-in' ? (
                 <InputField
                   value={signinData}
-                  onChange={setSigninData}
+                  onChange={(val) => {
+                    setSigninData(val);
+                    if (errorMessage) setErrorMessage(null);
+                  }}
                   type="text"
                   placeholder="Telefon nebo uživatelské jméno"
+                  hintText={errorMessage || ''}
+                  destructive={Boolean(errorMessage)}
                 />
               ) : (
                 <InputField
                   value={phoneNumber}
-                  onChange={setPhoneNumber}
+                  onChange={(val) => {
+                    setPhoneNumber(val);
+                    if (errorMessage) setErrorMessage(null);
+                  }}
                   type="tel"
-                  placeholder="777 123 456"
+                  placeholder="+420777123456"
+                  hintText={errorMessage || ''}
+                  destructive={Boolean(errorMessage)}
                 />
               )}
             </div>
 
             {/* Login Button */}
-            <div className="mb-4xl">
-              <Button size="xl" hierarchy="primary" onClick={handleContinueClick}>
+            <div className={buttonContainerClasses}>
+              <Button 
+                size="xl" 
+                hierarchy="primary" 
+                onClick={handleContinueClick} 
+                isLoading={isPending}
+                disabled={isPending}
+              >
                 Pokračovat
               </Button>
             </div>
 
             {/* Footer */}
-            <div className="text-center text-[12px] leading-[18px]">
+            <div className={footerTextClasses}>
               <p className="text-[#475467]">
                 Vytvořením účtu souhlasíte s našimi{' '}
                 <a
                   href="https://eroguide.cz/pages/legal"
                   target="blank"
-                  className="text-[#C00C53] underline"
+                  className={footerLinkClasses}
                 >
                   obchodními <br /> podmínkami
                 </a>{' '}
@@ -237,7 +390,7 @@ const handleTypeClick = (text: string) => {
                 <a
                   href="https://eroguide.cz/pages/privacy"
                   target="blank"
-                  className="text-[#C00C53] underline"
+                  className={footerLinkClasses}
                 >
                   zásadami ochrany osobních údajů
                 </a>
@@ -250,21 +403,42 @@ const handleTypeClick = (text: string) => {
         {/* OTP Step */}
         {steps === 'otp' && (
           <div className="flex flex-col gap-0">
-            <div className="mb-3xl">
-              <VerificationCodeInput digits={4} onChange={setOtpCode} value={otpCode} />
+            <div className={inputFieldClasses}>
+              <VerificationCodeInput
+                digits={4}
+                value={otpCode}
+                onChange={(val) => {
+                  setOtpCode(val);
+                  if (errorMessage) setErrorMessage(null);
+                }}
+                hintText={errorMessage || ''}
+                isDestructive={Boolean(errorMessage)}
+              />
             </div>
 
-            <div className="mb-4xl">
-              <Button size="xl" hierarchy="primary" onClick={handleContinueClick}>
+            <div className={buttonContainerClasses}>
+              <Button 
+                size="xl" 
+                hierarchy="primary" 
+                onClick={handleContinueClick} 
+                isLoading={isPending}
+                disabled={isPending}
+              >
                 Potvrdit
               </Button>
             </div>
 
-            <p className="text-[14px] leading-[20px] text-[#475467] text-center mb-4xl inline-flex justify-center items-center gap-1">
+            <p className={resendCodeClasses}>
               Nedostali jste kód?{' '}
-              <Button size="md" hierarchy="link color" onClick={() => {}}>
-                Znovu odeslat kód
+              <Button
+                size="md"
+                hierarchy="link color"
+                onClick={handleResendOtp}
+                disabled={resendCooldown > 0 || isPending}
+              >
+                Znovu odeslat kód{resendCooldown > 0 ? ` (${resendCooldown}s)` : ''}
               </Button>
+
             </p>
 
             <div className="text-center flex justify-center items-center">
@@ -285,37 +459,44 @@ const handleTypeClick = (text: string) => {
         {steps === 'who' && (
           <div className="flex flex-col gap-0">
             <CheckboxGroup breakpoint="mobile">
-            <CheckboxGroupItem 
-        icon={HeartCircleIcon} 
-        size="sm" 
-        text="Holka na sex" 
-        selected={selectedServiceType === "Holka na sex"}
-        onClick={() => handleTypeClick("Holka na sex")}
-      />
-      <CheckboxGroupItem 
-        icon={HeartHandIcon} 
-        size="sm" 
-        text="Masérka" 
-        selected={selectedServiceType === "Masérka"}
-        onClick={() => handleTypeClick("Masérka")}
-      />
-      <CheckboxGroupItem 
-        icon={Building08Icon} 
-        size="sm" 
-        text="Privát" 
-        selected={selectedServiceType === "Privát"}
-        onClick={() => handleTypeClick("Privát")}
-      />
-      <CheckboxGroupItem 
-        icon={Building04Icon} 
-        size="sm" 
-        text="Masážní salon" 
-        selected={selectedServiceType === "Masážní salon"}
-        onClick={() => handleTypeClick("Masážní salon")}
-      /></CheckboxGroup>
+              <CheckboxGroupItem
+                icon={HeartCircleIcon}
+                size="sm"
+                text="Holka na sex"
+                selected={selectedServiceType === 'Holka na sex'}
+                onClick={() => handleTypeClick('Holka na sex')}
+              />
+              <CheckboxGroupItem
+                icon={HeartHandIcon}
+                size="sm"
+                text="Masérka"
+                selected={selectedServiceType === 'Masérka'}
+                onClick={() => handleTypeClick('Masérka')}
+              />
+              <CheckboxGroupItem
+                icon={Building08Icon}
+                size="sm"
+                text="Privát"
+                selected={selectedServiceType === 'Privát'}
+                onClick={() => handleTypeClick('Privát')}
+              />
+              <CheckboxGroupItem
+                icon={Building04Icon}
+                size="sm"
+                text="Masážní salon"
+                selected={selectedServiceType === 'Masážní salon'}
+                onClick={() => handleTypeClick('Masážní salon')}
+              />
+            </CheckboxGroup>
 
             <div className="mb-4xl mt-3xl">
-              <Button size="xl" hierarchy="primary" onClick={handleContinueClick}>
+              <Button 
+                size="xl" 
+                hierarchy="primary" 
+                onClick={handleContinueClick} 
+                isLoading={isPending}
+                disabled={isPending}
+              >
                 Pokračovat
               </Button>
             </div>
@@ -325,60 +506,51 @@ const handleTypeClick = (text: string) => {
         {/* Password Step */}
         {steps === 'password' && (
           <div className="flex flex-col gap-0">
-            <div className="mb-3xl">
+            <div className={inputFieldClasses}>
               <InputField
                 value={password}
-                onChange={setPassword}
+                onChange={(val) => {
+                  setPassword(val);
+                  if (errorMessage) setErrorMessage(null);
+                }}
                 type="password"
                 placeholder="Zadejte heslo"
+                hintText={errorMessage || ''}
+                destructive={Boolean(errorMessage)}
               />
             </div>
-            <div >
-              <Button
-                size="xl"
-                hierarchy="primary"
-                onClick={handleContinueClick}
+            <div>
+              <Button 
+                size="xl" 
+                hierarchy="primary" 
+                onClick={handleContinueClick} 
+                isLoading={isPending}
+                disabled={isPending}
               >
                 Zaregistrovat se
               </Button>
             </div>
           </div>
         )}
-
-        {/* Confetti Step
-        {steps === 'confetti' && (
-          <div className="flex flex-col gap-0 items-center">
-            <div className="mb-3xl text-center">
-              <div className="text-6xl mb-4">🎉</div>
-              <h3 className="text-[#101828] text-[20px] leading-[28px] font-semibold mb-xs">
-                Vítejte na palubě, 
-              </h3>
-              <p className="text-[#475467] text-[16px] leading-[24px]">
-                Váš účet byl úspěšně vytvořen.
-              </p>
-            </div>
-
-            <div className="mb-4xl w-full">
-              <Button size="xl" hierarchy="primary" onClick={handleContinueClick}>
-                Přejít na dashboard
-              </Button>
-            </div>
-          </div>
-        )} */}
       </div>
-      ) : (
-        <div className='flex flex-col gap-0 max-w-[375px] w-full items-center py-0 px-xl'>
-  <FeaturedIcon type='light' color='success' icon={CheckCircleIcon} size='lg'/>
-  <p className='mt-2xl mb-xs text-[#101828] text-[24px] leading-[32px] font-semibold text-center'>Gratulujeme</p>
-  <p className='text-[#475467] text-[16px] leading-[24px] text-center'>Úspěšně jste se zaregistrovali! Nyní můžete nastavit svůj profil a začít inzerovat.</p>
-  
-  {/* Button container */}
-  <div className='w-full mt-3xl tablet:mt-3xl fixed bottom-3xl left-0 right-0 px-xl tablet:relative tablet:bottom-auto tablet:left-auto tablet:right-auto tablet:px-0'>
-    <Button size='xl' hierarchy='primary' onClick={handleContinueClick}>Začít inzerovat</Button>
+    ) : (
+      <div className={confettiContentClasses}>
+        <FeaturedIcon type="light" color="success" icon={CheckCircleIcon} size="lg" />
+        <p className={confettiTitleClasses}>
+          Gratulujeme
+        </p>
+        <p className={confettiSubtitleClasses}>
+          Úspěšně jste se zaregistrovali! Nyní můžete nastavit svůj profil a začít inzerovat.
+        </p>
+
+        {/* Button container */}
+        <div className={confettiButtonContainerClasses}>
+          <Button size="xl" hierarchy="primary" onClick={handleContinueClick}>
+            Začít inzerovat
+          </Button>
+        </div>
+      </div>
+    )}
   </div>
-</div>
-      )}
-      
-    </div>
-  )
+);
 }
