@@ -36,7 +36,8 @@ const countryMap = {
 type CountryCode = keyof typeof countryMap
 
 // Style constants
-const baseInputClasses = 'rounded-md px-[14px] py-[10px] border shadow-xs w-full focus:outline-[4px] focus:ring-none placeholder:text-[#667085] text-[#101828] text-[16px] leading-[24px]'
+const baseInputClasses =
+  'rounded-md px-[14px] py-[10px] border shadow-xs w-full focus:outline-[4px] focus:ring-none placeholder:text-[#667085] text-[#101828] text-[16px] leading-[24px]'
 const normalInputClasses = 'border-[#D0D5DD] focus:outline-[#98A2B324]'
 const destructiveInputClasses = 'border-[#FDA29B] focus:outline-[#F044383D]'
 const disabledInputClasses = 'border-[#D0D5DD] bg-[#F9FAFB] text-[#667085]'
@@ -45,16 +46,21 @@ const labelClasses = 'block font-medium text-[#344054] text-[14px] leading-[20px
 const requiredIndicatorClasses = 'text-[#C00C53] text-[14px] leading-[20px]'
 const hintTextClasses = 'mt-sm text-[14px] leading-[20px]'
 
-const countrySelectorButtonClasses = 'flex items-center justify-center gap-xs rounded-md w-[70px] min-w-[70px] py-[10px] px-lg shadow-xs border border-[#D0D5DD] cursor-pointer'
+const countrySelectorButtonClasses =
+  'flex items-center justify-center gap-xs rounded-md w-[70px] min-w-[70px] py-[10px] px-lg shadow-xs border border-[#D0D5DD] cursor-pointer'
 const passwordToggleButtonClasses = 'absolute top-[14px] right-[14px] cursor-pointer'
 
-const drawerOverlayClasses = 'fixed inset-0 z-50 flex items-end tablet:items-start tablet:justify-end bg-black/10 backdrop-blur-sm'
-const drawerContainerClasses = 'relative bg-white w-full tablet:w-[375px] h-auto tablet:h-full rounded-t-2xl tablet:rounded-none shadow-xl pt-[54px] tablet:pt-3xl px-xl pb-3xl tablet:pb-xl flex flex-col justify-between'
-const drawerHandleClasses = 'w-[36px] h-[5px] rounded-[8px] bg-[#D0D5DD] flex tablet:hidden absolute top-[6px] left-1/2 -translate-x-1/2'
-const drawerCloseButtonClasses = 'absolute top-[22px] right-[26px] hidden tablet:block cursor-pointer'
+const drawerOverlayClasses =
+  'fixed inset-0 z-50 flex items-end tablet:items-start tablet:justify-end bg-black/10 backdrop-blur-sm'
+const drawerContainerClasses =
+  'relative bg-white w-full tablet:w-[375px] h-auto tablet:h-full rounded-t-2xl tablet:rounded-none shadow-xl pt-[54px] tablet:pt-3xl px-xl tablet:px-3xl pb-3xl tablet:pb-xl flex flex-col justify-between'
+const drawerHandleClasses =
+  'w-[36px] h-[5px] rounded-[8px] bg-[#D0D5DD] flex tablet:hidden absolute top-[6px] left-1/2 -translate-x-1/2'
+const drawerCloseButtonClasses =
+  'absolute top-[22px] right-[26px] hidden tablet:block cursor-pointer'
 const drawerTitleClasses = 'text-[#101828] text-[18px] leading-[28px] font-semibold mb-2xl'
 const drawerContentClasses = 'mb-3xl'
-const drawerGridClasses = 'grid grid-cols-1 gap-3 overflow-y-auto'
+const drawerGridClasses = 'grid grid-cols-1 gap-0 overflow-y-auto'
 
 function detectCountry(value: string) {
   const code = (Object.keys(countryMap) as CountryCode[]).find((key) => value.startsWith(key))
@@ -116,12 +122,10 @@ function InputField({
   }
 
   return (
-    <div className='relative'>
+    <div className="relative">
       {label && (
         <div className="flex items-center mb-1 gap-xxs">
-          <label className={labelClasses}>
-            {label}
-          </label>
+          <label className={labelClasses}>{label}</label>
           {required && <span className={requiredIndicatorClasses}>*</span>}
         </div>
       )}
@@ -178,11 +182,7 @@ function InputField({
         </button>
       )}
 
-      {hintText && !HelpIcon && (
-        <p className={getHintTextClasses()}>
-          {hintText}
-        </p>
-      )}
+      {hintText && !HelpIcon && <p className={getHintTextClasses()}>{hintText}</p>}
       {HelpIcon && (
         <span className="ml-1" title={hintText}>
           <HelpIcon className="w-4 h-4 text-gray-400" />
@@ -200,29 +200,32 @@ function InputField({
             >
               <CloseIcon className="w-[20px] h-[20px] [&>path]:stroke-[#98A2B3]" />
             </button>
-            
+
             <div className={drawerContentClasses}>
               <h3 className={drawerTitleClasses}>Země</h3>
               <div className={drawerGridClasses}>
-                {(Object.entries(countryMap) as [CountryCode, { icon: any; code: string, name: string }][]).map(
-                  ([code, { icon: Icon, code: countryCode, name: countryName }]) => (
-                    <InputDropdownMenuItem 
-                      onClick={() => setSelectedCountryCode(code)} 
-                      key={code} 
-                      type='icon-leading' 
-                      icon={Icon} 
-                      text={countryName} 
-                      supportingText={code} 
-                      selected={selectedCountryCode === code}
-                    />
-                  ),
-                )}
+                {(
+                  Object.entries(countryMap) as [
+                    CountryCode,
+                    { icon: any; code: string; name: string },
+                  ][]
+                ).map(([code, { icon: Icon, code: countryCode, name: countryName }]) => (
+                  <InputDropdownMenuItem
+                    onClick={() => setSelectedCountryCode(code)}
+                    key={code}
+                    type="icon-leading"
+                    icon={Icon}
+                    text={countryName}
+                    supportingText={code}
+                    selected={selectedCountryCode === code}
+                  />
+                ))}
               </div>
             </div>
 
-            <Button 
-              size='md' 
-              hierarchy='primary' 
+            <Button
+              size="md"
+              hierarchy="primary"
               onClick={() => {
                 if (selectedCountryCode) {
                   onChange(selectedCountryCode + ' ')
