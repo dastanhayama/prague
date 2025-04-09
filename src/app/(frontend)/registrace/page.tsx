@@ -246,7 +246,7 @@ export default function LoginPage() {
   const containerClasses = `flex justify-center ${steps === 'confetti' ? 'items-center' : 'items-start'} min-h-screen w-full overflow-hidden relative`
 
   // Main content classes
-  const mainContentClasses = 'bg-transparent pt-6xl w-full max-w-[375px] px-xl'
+  const mainContentClasses = 'bg-transparent pt-6xl tablet:pt-9xl w-full max-w-[375px] px-xl'
 
   // Header classes
   const headerClasses = 'flex flex-col items-start mb-4xl relative'
