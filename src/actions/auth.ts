@@ -6,49 +6,94 @@ type RegisterUserPayload = {
   serviceType: string
 }
 
-export async function signInAction({ identifier }: { identifier: string }) {
-  const trimmed = identifier.trim()
+export async function checkSignInPhone({ identifier }: { identifier: string }) {
+  // Normalize: remove all spaces
+  const normalized = identifier.replace(/\s+/g, '').trim()
 
-  if (!trimmed) {
-    return { success: false, error: 'Zadejte telefonní číslo nebo uživatelské jméno' }
+  if (!normalized) {
+    return { success: false, error: 'Zadejte telefon.' }
   }
 
+  // Accept only + followed by 9–15 digits
   const phoneRegex = /^\+?\d{9,15}$/
-  const usernameRegex = /^[a-zA-Z0-9_.@-]{3,}$/
 
-  if (!phoneRegex.test(trimmed) && !usernameRegex.test(trimmed)) {
-    return { success: false, error: 'Neplatný formát telefonního čísla nebo uživatelského jména' }
+  if (!phoneRegex.test(normalized)) {
+    return {
+      success: false,
+      error: 'Neplatný formát telefonního čísla nebo uživatelského jména',
+    }
   }
 
-  // ⏳ Simulate server processing delay
+  // ⏳ Simulate processing delay
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/users?identifier=${encodeURIComponent(trimmed)}`,
-      {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-      },
-    )
+    // 🧪 Mock existing user phone number
+    const mockUserPhone = '+420777123456'
 
-    if (!res.ok) {
-      return { success: false, error: 'Chyba při ověřování uživatele' }
+    if (normalized === mockUserPhone) {
+      // Return a mock user object
+      return {
+        success: true,
+        user: {
+          id: 'mock-user-id',
+          phone: mockUserPhone,
+          name: 'Mock User',
+        },
+      }
     }
 
-    const user = await res.json()
-
-    if (!user || !user.id) {
-      return { success: false, error: 'Uživatel nebyl nalezen' }
+    // If not found
+    return {
+      success: false,
+      error: 'Uživatel nebyl nalezen. Zkuste se zaregistrovat.',
     }
-
-    return { success: true, user }
   } catch (err) {
     console.error('Sign-in error:', err)
-    return { success: false, error: 'Došlo k chybě na serveru' }
+    return {
+      success: false,
+      error: 'Došlo k chybě na serveru',
+    }
   }
 }
+
+export async function signInUserAction({
+  phoneNumber,
+  password,
+}: {
+  phoneNumber: string
+  password: string
+}) {
+  // Normalize input
+  const normalizedPhone = phoneNumber.replace(/\s+/g, '').trim()
+  const trimmedPassword = password.trim()
+
+  // Mock credentials
+  const MOCK_PHONE = '+420777123456'
+  const MOCK_PASSWORD = 'password123' // Must be at least 8 chars, have letters & numbers
+
+  // Simulate processing delay
+  await new Promise((res) => setTimeout(res, 1000))
+
+  // Check credentials
+  if (normalizedPhone === MOCK_PHONE && trimmedPassword === MOCK_PASSWORD) {
+    return {
+      success: true,
+      user: {
+        id: 'mock-user-id',
+        phone: MOCK_PHONE,
+        name: 'Mock User',
+      },
+    }
+  }
+
+  return {
+    success: false,
+    error: 'Zadali jste nesprávné heslo.',
+  }
+}
+
+
 
 export async function registerUserAction({
   phoneNumber,

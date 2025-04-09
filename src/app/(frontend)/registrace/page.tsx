@@ -21,16 +21,17 @@ import CheckCircleIcon from '@icons/General/check-circle.svg'
 import FeaturedIcon from '@/components/FeaturedIcon'
 import confetti from 'canvas-confetti'
 import { validatePhoneNumber } from './validatePhone'
-import { signInAction, sendOtpAction, verifyOtpAction, registerUserAction } from '@/actions/auth'
+import {checkSignInPhone,signInUserAction, sendOtpAction, verifyOtpAction, registerUserAction } from '@/actions/auth'
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>('')
-  const [signinData, setSigninData] = useState<string>('')
+  // const [signinData, setSigninData] = useState<string>('')
   const [otpCode, setOtpCode] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [selectedServiceType, setSelectedServiceType] = useState<string | null>('Holka na sex')
-  const [activeTab, setActiveTab] = useState('sign-in') // 'sign-in' or 'sign-up'
+  const [activeTab, setActiveTab] = useState<'sign-in' | 'sign-up'>('sign-in') // 'sign-in' or 'sign-up'
   const [steps, setSteps] = useState<string>('auth') // 'auth', 'otp', 'who', 'password', 'confetti'
+  const [signinStep, setSigninStep] = useState<'phone' | 'password'>('phone')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [resendCooldown, setResendCooldown] = useState(0)
@@ -47,6 +48,10 @@ export default function LoginPage() {
       // colors: ['#C00C53', '#00C896', '#FFD700', '#008CFF'],
     })
   }
+  useEffect(() => {
+    setErrorMessage(null)
+    setPhoneNumber('')
+  }, [activeTab])
   useEffect(() => {
     if (resendCooldown <= 0) return
 
@@ -93,25 +98,66 @@ export default function LoginPage() {
   // Handle continue button click based on current step and active tab
   const handleContinueClick = async () => {
     if (activeTab === 'sign-in') {
-      const trimmed = signinData.trim()
+      if(signinStep === 'phone') {
+        const phoneError = validatePhoneNumber(phoneNumber)
+          if (phoneError) {
+            setErrorMessage(phoneError)
+            return
+          }
+          setErrorMessage(null)
+      startTransition(async () => {
+      const response = await checkSignInPhone({ identifier: phoneNumber })
 
-      if (!trimmed) {
-        setErrorMessage('Zadejte telefonní číslo nebo uživatelské jméno')
+      if (!response.success) {
+        setErrorMessage(response.error || 'Neznámá chyba')
         return
       }
 
       setErrorMessage(null)
-      startTransition(async () => {
-        const response = await signInAction({ identifier: trimmed })
-
-        if (!response.success) {
-          setErrorMessage(response.error || 'Neznámá chyba')
+      setSigninStep('password')
+    })
+        return
+      } else {
+        //Validate Password
+        if(password.trim() === '') {
+          setErrorMessage('Zadejte sve heslo.')
           return
         }
+        if (password.length < 8) {
+          setErrorMessage('Heslo musí mít alespoň 8 znaků.')
+          return
+        }
+
+        if (!/\d/.test(password)) {
+          setErrorMessage('Heslo musí obsahovat alespoň jedno číslo.')
+          return
+        }
+
+        if (!/[a-zA-Z]/.test(password)) {
+          setErrorMessage('Heslo musí obsahovat alespoň jedno písmeno.')
+          return
+        }
+
         setErrorMessage(null)
-        console.log('User authenticated:', response.user)
-        // continue...
-      })
+
+        startTransition(async () => {
+          const response = await signInUserAction({
+            phoneNumber,
+            password,
+          })
+
+          if (!response.success) {
+            setErrorMessage(response.error || 'Signin error')
+            return
+          }
+          setErrorMessage(null)
+          console.log('✅ Successfully signed in', phoneNumber, password)
+          setPhoneNumber("")
+          setPassword("")
+          //Redirect
+          
+        })
+      }
     } else {
       // For sign-up, move through the steps
       switch (steps) {
@@ -137,7 +183,6 @@ export default function LoginPage() {
             setResendCooldown(60) // Set cooldown for resend button
           })
           break
-        case 'otp':
         case 'otp': {
           if (!/^\d{4}$/.test(otpCode)) {
             setErrorMessage('Kód musí být čtyřmístný')
@@ -163,7 +208,6 @@ export default function LoginPage() {
           break
         }
 
-        case 'who':
         case 'who': {
           if (!selectedServiceType) {
             setErrorMessage('Vyberte typ služby')
@@ -288,67 +332,61 @@ export default function LoginPage() {
               </div>
             </div>
             <h2 className={titleClasses}>
-              {steps === 'auth' && 'Vítejte'}
-              {steps === 'otp' && 'Ověření telefonního čísla'}
-              {steps === 'who' && 'Kdo jste?'}
-              {steps === 'password' && 'Vytvořte si heslo'}
-              {steps === 'confetti' && 'Registrace dokončena!'}
+              {activeTab === 'sign-up' && steps === 'auth' && 'Vítejte'}
+              {activeTab === 'sign-in' && signinStep === 'phone' && 'Vítejte'}
+              {activeTab === 'sign-in' && signinStep === 'password' && 'Heslo'}
+              {activeTab === 'sign-up' && steps === 'otp' && 'Ověření telefonního čísla'}
+              {activeTab === 'sign-up' && steps === 'who' && 'Kdo jste?'}
+              {activeTab === 'sign-up' && steps === 'password' && 'Vytvořte si heslo'}
+              {activeTab === 'sign-up' && steps === 'confetti' && 'Registrace dokončena!'}
             </h2>
             <p className={subtitleClasses}>
-              {steps === 'auth' && 'Přihlaste se nebo se zaregistrujte.'}
-              {steps === 'otp' && 'Zadejte čtyřmístný kód, který jsme vám zaslali na číslo '}
-              {steps === 'otp' && phoneNumber && (
+            {activeTab === 'sign-in' && signinStep === 'phone' && 'Přihlaste se nebo se zaregistrujte.'}
+              {activeTab === 'sign-up' && steps === 'auth' && 'Přihlaste se nebo se zaregistrujte.'}
+              {activeTab === 'sign-up' &&
+                steps === 'otp' &&
+                'Zadejte čtyřmístný kód, který jsme vám zaslali na číslo '}
+              {activeTab === 'sign-up' && steps === 'otp' && phoneNumber && (
                 <span className="text-[#101828] font-semibold">{phoneNumber}.</span>
               )}
-              {steps === 'who' && 'Vyberte typ poskytovaných služeb.'}
-              {steps === 'password' &&
+              {activeTab === 'sign-up' && steps === 'who' && 'Vyberte typ poskytovaných služeb.'}
+              {activeTab === 'sign-up' &&
+                steps === 'password' &&
                 'Vaše heslo musí mít alespoň 8 znaků a mělo by obsahovat kombinaci čísel a písmen.'}
-              {steps === 'confetti' && 'Registrace dokončena!'}
+              {activeTab === 'sign-up' && steps === 'confetti' && 'Registrace dokončena!'}
             </p>
           </div>
 
           {/* Auth Step - Phone/Username Input */}
-          {steps === 'auth' && (
-            <div className="flex flex-col gap-0">
-              {/* Login Tabs */}
-              <div className={authTabContainerClasses}>
-                <HorizontalTabs size="sm" type="button white border" fullWidth>
-                  <TabButtonBase
-                    current={activeTab === 'sign-in'}
-                    type="button white"
-                    size="sm"
-                    fullWidth
-                    onClick={() => setActiveTab('sign-in')}
-                  >
-                    <span>Přihlásit se</span>
-                  </TabButtonBase>
-                  <TabButtonBase
-                    current={activeTab === 'sign-up'}
-                    type="button white"
-                    size="sm"
-                    fullWidth
-                    onClick={() => setActiveTab('sign-up')}
-                  >
-                    <span>Registrovat se</span>
-                  </TabButtonBase>
-                </HorizontalTabs>
-              </div>
+          {(activeTab === 'sign-up' && steps === 'auth') ||
+            (activeTab === 'sign-in' && signinStep === 'phone') ? (
+              <div className="flex flex-col gap-0">
+                {/* Login Tabs */}
+                <div className={authTabContainerClasses}>
+                  <HorizontalTabs size="sm" type="button white border" fullWidth>
+                    <TabButtonBase
+                      current={activeTab === 'sign-in'}
+                      type="button white"
+                      size="sm"
+                      fullWidth
+                      onClick={() => setActiveTab('sign-in')}
+                    >
+                      <span>Přihlásit se</span>
+                    </TabButtonBase>
+                    <TabButtonBase
+                      current={activeTab === 'sign-up'}
+                      type="button white"
+                      size="sm"
+                      fullWidth
+                      onClick={() => setActiveTab('sign-up')}
+                    >
+                      <span>Registrovat se</span>
+                    </TabButtonBase>
+                  </HorizontalTabs>
+                </div>
 
-              {/* Phone Input */}
-              <div className={inputFieldClasses}>
-                {activeTab === 'sign-in' ? (
-                  <InputField
-                    value={signinData}
-                    onChange={(val) => {
-                      setSigninData(val)
-                      if (errorMessage) setErrorMessage(null)
-                    }}
-                    type="text"
-                    placeholder="Telefon nebo uživatelské jméno"
-                    hintText={errorMessage || ''}
-                    destructive={Boolean(errorMessage)}
-                  />
-                ) : (
+                {/* Phone Input */}
+                <div className={inputFieldClasses}>
                   <InputField
                     value={phoneNumber}
                     onChange={(val) => {
@@ -360,11 +398,61 @@ export default function LoginPage() {
                     hintText={errorMessage || ''}
                     destructive={Boolean(errorMessage)}
                   />
-                )}
-              </div>
+                </div>
 
-              {/* Login Button */}
-              <div className={buttonContainerClasses}>
+                {/* Login Button */}
+                <div className={buttonContainerClasses}>
+                  <Button
+                    size="xl"
+                    hierarchy="primary"
+                    onClick={handleContinueClick}
+                    isLoading={isPending}
+                    disabled={isPending}
+                  >
+                    Pokračovat
+                  </Button>
+                </div>
+
+                {/* Footer */}
+                <div className={footerTextClasses}>
+                  <p className="text-[#475467]">
+                    Vytvořením účtu souhlasíte s našimi{' '}
+                    <a
+                      href="https://eroguide.cz/pages/legal"
+                      target="blank"
+                      className={footerLinkClasses}
+                    >
+                      obchodními <br /> podmínkami
+                    </a>{' '}
+                    a{' '}
+                    <a
+                      href="https://eroguide.cz/pages/privacy"
+                      target="blank"
+                      className={footerLinkClasses}
+                    >
+                      zásadami ochrany osobních údajů
+                    </a>
+                    .
+                  </p>
+                </div>
+              </div>
+          ) : null}
+          {activeTab === 'sign-in' && signinStep === 'password' && (
+            <div className="flex flex-col gap-0">
+              <div className={inputFieldClasses}>
+                <InputField
+                  value={password}
+                  onChange={(val) => {
+                    setPassword(val)
+                    if (errorMessage) setErrorMessage(null)
+                  }}
+                  type="password"
+                  placeholder="Zadejte heslo"
+                  hintText={errorMessage || ''}
+                  destructive={Boolean(errorMessage)}
+                />
+              </div>
+              <div className="mb-4xl">
                 <Button
                   size="xl"
                   hierarchy="primary"
@@ -372,37 +460,19 @@ export default function LoginPage() {
                   isLoading={isPending}
                   disabled={isPending}
                 >
-                  Pokračovat
+                  Přihlásit se
                 </Button>
               </div>
-
-              {/* Footer */}
-              <div className={footerTextClasses}>
-                <p className="text-[#475467]">
-                  Vytvořením účtu souhlasíte s našimi{' '}
-                  <a
-                    href="https://eroguide.cz/pages/legal"
-                    target="blank"
-                    className={footerLinkClasses}
-                  >
-                    obchodními <br /> podmínkami
-                  </a>{' '}
-                  a{' '}
-                  <a
-                    href="https://eroguide.cz/pages/privacy"
-                    target="blank"
-                    className={footerLinkClasses}
-                  >
-                    zásadami ochrany osobních údajů
-                  </a>
-                  .
-                </p>
+              <div className="flex items-center gap-xs justify-center">
+              <p className="text-[14px] leading-[20px] text-[#475467]">Zapomněli jste heslo?</p> 
+              <Button size="md" hierarchy="link color" onClick={() => {}}>Obnovit</Button>
               </div>
             </div>
           )}
 
+
           {/* OTP Step */}
-          {steps === 'otp' && (
+          {activeTab === 'sign-up' && steps === 'otp' && (
             <div className="flex flex-col gap-0">
               <div className={inputFieldClasses}>
                 <VerificationCodeInput
@@ -456,7 +526,7 @@ export default function LoginPage() {
           )}
 
           {/* Who Step */}
-          {steps === 'who' && (
+          {activeTab === 'sign-up' && steps === 'who' && (
             <div className="flex flex-col gap-0">
               <CheckboxGroup breakpoint="mobile">
                 <CheckboxGroupItem
@@ -504,7 +574,7 @@ export default function LoginPage() {
           )}
 
           {/* Password Step */}
-          {steps === 'password' && (
+          {activeTab === 'sign-up' && steps === 'password' && (
             <div className="flex flex-col gap-0">
               <div className={inputFieldClasses}>
                 <InputField

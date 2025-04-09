@@ -228,7 +228,7 @@ function InputField({
               hierarchy="primary"
               onClick={() => {
                 if (selectedCountryCode) {
-                  onChange(selectedCountryCode + ' ')
+                  onChange(selectedCountryCode)
                   setIsDrawerOpen(false)
                 }
               }}
