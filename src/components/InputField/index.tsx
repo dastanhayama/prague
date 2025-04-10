@@ -37,7 +37,7 @@ type CountryCode = keyof typeof countryMap
 
 // Style constants
 const baseInputClasses =
-  'rounded-md px-[14px] py-[10px] border shadow-xs w-full focus:outline-[4px] focus:ring-none placeholder:text-[#667085] text-[#101828] text-[16px] leading-[24px]'
+  'rounded-md px-[14px] py-[10px] border shadow-xs w-full focus:outline-[4px] focus:ring-none placeholder:text-[#667085] text-[#101828] text-[16px] leading-[24px] bg-primary'
 const normalInputClasses = 'border-[#D0D5DD] focus:outline-[#98A2B324]'
 const destructiveInputClasses = 'border-[#FDA29B] focus:outline-[#F044383D]'
 const disabledInputClasses = 'border-[#D0D5DD] bg-[#F9FAFB] text-[#667085]'
@@ -47,7 +47,7 @@ const requiredIndicatorClasses = 'text-[#C00C53] text-[14px] leading-[20px]'
 const hintTextClasses = 'mt-sm text-[14px] leading-[20px]'
 
 const countrySelectorButtonClasses =
-  'flex items-center justify-center gap-xs rounded-md w-[70px] min-w-[70px] py-[10px] px-lg shadow-xs border border-[#D0D5DD] cursor-pointer'
+  'flex items-center justify-center gap-xs rounded-md w-[70px] min-w-[70px] py-[10px] px-lg shadow-xs border border-[#D0D5DD] cursor-pointer bg-primary'
 const passwordToggleButtonClasses = 'absolute top-[14px] right-[14px] cursor-pointer'
 
 const drawerOverlayClasses =

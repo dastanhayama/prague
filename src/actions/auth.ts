@@ -20,7 +20,7 @@ export async function checkSignInPhone({ identifier }: { identifier: string }) {
   if (!phoneRegex.test(normalized)) {
     return {
       success: false,
-      error: 'Neplatný formát telefonního čísla nebo uživatelského jména',
+      error: 'Neplatný formát telefonního čísla.',
     }
   }
 
@@ -157,7 +157,7 @@ export async function verifyOtpAction({
   const trimmedCode = otpCode.trim()
 
   if (!/^\d{4}$/.test(trimmedCode)) {
-    return { success: false, error: 'Kód musí být čtyřmístný' }
+    return { success: false, error: 'Nesprávný kód, zkuste to prosím znovu.' }
   }
 
   // Simulate delay
@@ -177,6 +177,6 @@ export async function verifyOtpAction({
 
   return {
     success: false,
-    error: 'Neplatný kód, zažádejte prosím o nový.',
+    error: 'Nesprávný kód, zkuste to prosím znovu.',
   }
 }

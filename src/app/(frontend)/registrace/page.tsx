@@ -21,7 +21,13 @@ import CheckCircleIcon from '@icons/General/check-circle.svg'
 import FeaturedIcon from '@/components/FeaturedIcon'
 import confetti from 'canvas-confetti'
 import { validatePhoneNumber } from './validatePhone'
-import {checkSignInPhone,signInUserAction, sendOtpAction, verifyOtpAction, registerUserAction } from '@/actions/auth'
+import {
+  checkSignInPhone,
+  signInUserAction,
+  sendOtpAction,
+  verifyOtpAction,
+  registerUserAction,
+} from '@/actions/auth'
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>('')
@@ -98,28 +104,28 @@ export default function LoginPage() {
   // Handle continue button click based on current step and active tab
   const handleContinueClick = async () => {
     if (activeTab === 'sign-in') {
-      if(signinStep === 'phone') {
+      if (signinStep === 'phone') {
         const phoneError = validatePhoneNumber(phoneNumber)
-          if (phoneError) {
-            setErrorMessage(phoneError)
+        if (phoneError) {
+          setErrorMessage(phoneError)
+          return
+        }
+        setErrorMessage(null)
+        startTransition(async () => {
+          const response = await checkSignInPhone({ identifier: phoneNumber })
+
+          if (!response.success) {
+            setErrorMessage(response.error || 'Neznámá chyba')
             return
           }
+
           setErrorMessage(null)
-      startTransition(async () => {
-      const response = await checkSignInPhone({ identifier: phoneNumber })
-
-      if (!response.success) {
-        setErrorMessage(response.error || 'Neznámá chyba')
-        return
-      }
-
-      setErrorMessage(null)
-      setSigninStep('password')
-    })
+          setSigninStep('password')
+        })
         return
       } else {
         //Validate Password
-        if(password.trim() === '') {
+        if (password.trim() === '') {
           setErrorMessage('Zadejte sve heslo.')
           return
         }
@@ -152,10 +158,9 @@ export default function LoginPage() {
           }
           setErrorMessage(null)
           console.log('✅ Successfully signed in', phoneNumber, password)
-          setPhoneNumber("")
-          setPassword("")
+          setPhoneNumber('')
+          setPassword('')
           //Redirect
-          
         })
       }
     } else {
@@ -341,7 +346,9 @@ export default function LoginPage() {
               {activeTab === 'sign-up' && steps === 'confetti' && 'Registrace dokončena!'}
             </h2>
             <p className={subtitleClasses}>
-            {activeTab === 'sign-in' && signinStep === 'phone' && 'Přihlaste se nebo se zaregistrujte.'}
+              {activeTab === 'sign-in' &&
+                signinStep === 'phone' &&
+                'Přihlaste se nebo se zaregistrujte.'}
               {activeTab === 'sign-up' && steps === 'auth' && 'Přihlaste se nebo se zaregistrujte.'}
               {activeTab === 'sign-up' &&
                 steps === 'otp' &&
@@ -359,83 +366,83 @@ export default function LoginPage() {
 
           {/* Auth Step - Phone/Username Input */}
           {(activeTab === 'sign-up' && steps === 'auth') ||
-            (activeTab === 'sign-in' && signinStep === 'phone') ? (
-              <div className="flex flex-col gap-0">
-                {/* Login Tabs */}
-                <div className={authTabContainerClasses}>
-                  <HorizontalTabs size="sm" type="button white border" fullWidth>
-                    <TabButtonBase
-                      current={activeTab === 'sign-in'}
-                      type="button white"
-                      size="sm"
-                      fullWidth
-                      onClick={() => setActiveTab('sign-in')}
-                    >
-                      <span>Přihlásit se</span>
-                    </TabButtonBase>
-                    <TabButtonBase
-                      current={activeTab === 'sign-up'}
-                      type="button white"
-                      size="sm"
-                      fullWidth
-                      onClick={() => setActiveTab('sign-up')}
-                    >
-                      <span>Registrovat se</span>
-                    </TabButtonBase>
-                  </HorizontalTabs>
-                </div>
-
-                {/* Phone Input */}
-                <div className={inputFieldClasses}>
-                  <InputField
-                    value={phoneNumber}
-                    onChange={(val) => {
-                      setPhoneNumber(val)
-                      if (errorMessage) setErrorMessage(null)
-                    }}
-                    type="tel"
-                    placeholder="+420777123456"
-                    hintText={errorMessage || ''}
-                    destructive={Boolean(errorMessage)}
-                  />
-                </div>
-
-                {/* Login Button */}
-                <div className={buttonContainerClasses}>
-                  <Button
-                    size="xl"
-                    hierarchy="primary"
-                    onClick={handleContinueClick}
-                    isLoading={isPending}
-                    disabled={isPending}
+          (activeTab === 'sign-in' && signinStep === 'phone') ? (
+            <div className="flex flex-col gap-0">
+              {/* Login Tabs */}
+              <div className={authTabContainerClasses}>
+                <HorizontalTabs size="sm" type="button white border" fullWidth>
+                  <TabButtonBase
+                    current={activeTab === 'sign-in'}
+                    type="button white"
+                    size="sm"
+                    fullWidth
+                    onClick={() => setActiveTab('sign-in')}
                   >
-                    Pokračovat
-                  </Button>
-                </div>
-
-                {/* Footer */}
-                <div className={footerTextClasses}>
-                  <p className="text-[#475467]">
-                    Vytvořením účtu souhlasíte s našimi{' '}
-                    <a
-                      href="https://eroguide.cz/pages/legal"
-                      target="blank"
-                      className={footerLinkClasses}
-                    >
-                      obchodními <br /> podmínkami
-                    </a>{' '}
-                    a{' '}
-                    <a
-                      href="https://eroguide.cz/pages/privacy"
-                      target="blank"
-                      className={footerLinkClasses}
-                    >
-                      zásadami ochrany osobních údajů
-                    </a>
-                    .
-                  </p>
-                </div>
+                    <span>Přihlásit se</span>
+                  </TabButtonBase>
+                  <TabButtonBase
+                    current={activeTab === 'sign-up'}
+                    type="button white"
+                    size="sm"
+                    fullWidth
+                    onClick={() => setActiveTab('sign-up')}
+                  >
+                    <span>Registrovat se</span>
+                  </TabButtonBase>
+                </HorizontalTabs>
               </div>
+
+              {/* Phone Input */}
+              <div className={inputFieldClasses}>
+                <InputField
+                  value={phoneNumber}
+                  onChange={(val) => {
+                    setPhoneNumber(val)
+                    if (errorMessage) setErrorMessage(null)
+                  }}
+                  type="tel"
+                  placeholder="+420777123456"
+                  hintText={errorMessage || ''}
+                  destructive={Boolean(errorMessage)}
+                />
+              </div>
+
+              {/* Login Button */}
+              <div className={buttonContainerClasses}>
+                <Button
+                  size="xl"
+                  hierarchy="primary"
+                  onClick={handleContinueClick}
+                  isLoading={isPending}
+                  disabled={isPending}
+                >
+                  Pokračovat
+                </Button>
+              </div>
+
+              {/* Footer */}
+              <div className={footerTextClasses}>
+                <p className="text-[#475467]">
+                  Vytvořením účtu souhlasíte s našimi{' '}
+                  <a
+                    href="https://eroguide.cz/pages/legal"
+                    target="blank"
+                    className={footerLinkClasses}
+                  >
+                    obchodními <br /> podmínkami
+                  </a>{' '}
+                  a{' '}
+                  <a
+                    href="https://eroguide.cz/pages/privacy"
+                    target="blank"
+                    className={footerLinkClasses}
+                  >
+                    zásadami ochrany osobních údajů
+                  </a>
+                  .
+                </p>
+              </div>
+            </div>
           ) : null}
           {activeTab === 'sign-in' && signinStep === 'password' && (
             <div className="flex flex-col gap-0">
@@ -464,12 +471,13 @@ export default function LoginPage() {
                 </Button>
               </div>
               <div className="flex items-center gap-xs justify-center">
-              <p className="text-[14px] leading-[20px] text-[#475467]">Zapomněli jste heslo?</p> 
-              <Button size="md" hierarchy="link color" onClick={() => {}}>Obnovit</Button>
+                <p className="text-[14px] leading-[20px] text-[#475467]">Zapomněli jste heslo?</p>
+                <Button size="md" hierarchy="link color" onClick={() => {}}>
+                  Obnovit
+                </Button>
               </div>
             </div>
           )}
-
 
           {/* OTP Step */}
           {activeTab === 'sign-up' && steps === 'otp' && (
@@ -519,7 +527,7 @@ export default function LoginPage() {
                   icon={ArrowLeft}
                   iconPosition="left"
                 >
-                  Změnit telefonní číso
+                  Změnit telefonní číslo
                 </Button>
               </div>
             </div>
