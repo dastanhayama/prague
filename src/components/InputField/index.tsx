@@ -103,6 +103,7 @@ function InputField({
   }, [country])
 
   const shouldSplit = type === 'tel' || (!!country && value.length > 0)
+  // const shouldSplit = type === 'tel'
 
   // Dynamic class composition
   const getInputClasses = () => {
@@ -130,7 +131,7 @@ function InputField({
         </div>
       )}
 
-      {shouldSplit ? (
+      {shouldSplit && type !== 'password' ? (
         <div className="flex w-full gap-md relative cursor-pointer">
           <button
             type="button"
@@ -146,7 +147,7 @@ function InputField({
           </button>
           <input
             ref={inputRef}
-            type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
+            type={type}
             placeholder={placeholder}
             className={getInputClasses()}
             value={value}

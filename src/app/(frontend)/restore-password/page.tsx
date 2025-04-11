@@ -54,11 +54,11 @@ export default function RestorePasswordPage() {
     startTransition(async () => {
       if (steps === 'phone') {
         const phoneError = validatePhoneNumber(phoneNumber)
-                if (phoneError) {
-                  setErrorMessage(phoneError)
-                  return
-                }
-                setErrorMessage(null)
+        if (phoneError) {
+          setErrorMessage(phoneError)
+          return
+        }
+        setErrorMessage(null)
         const result = await sendOtpRestoreAction({ phoneNumber })
         if (!result.success) {
           setErrorMessage(result.error || 'Chyba při odesílání kódu')
@@ -175,7 +175,7 @@ export default function RestorePasswordPage() {
             {steps === 'password' && 'Vytvořte si nové heslo'}
           </h2>
           <p className={subtitleClasses}>
-            {steps === 'phone' && 'Zadejte prosím vaše telefonní číslo nebo uživatelské jméno.'}
+            {steps === 'phone' && 'Zadejte prosím vaše telefonní číslo.'}
             {steps === 'code' && 'Zadejte čtyřmístný kód, který jsme vám zaslali na číslo končící'}
             {steps === 'code' && phoneNumber && (
               <span className="text-[#101828] font-semibold">

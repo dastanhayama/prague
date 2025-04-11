@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, useEffect, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import Logo from '@/components/Logo'
 import HorizontalTabs from '@/components/HorizontalTabs'
 import TabButtonBase from '@/components/TabButtonBase'
@@ -30,6 +31,7 @@ import {
 } from '@/actions/auth'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [phoneNumber, setPhoneNumber] = useState<string>('')
   // const [signinData, setSigninData] = useState<string>('')
   const [otpCode, setOtpCode] = useState<string>('')
@@ -472,7 +474,11 @@ export default function LoginPage() {
               </div>
               <div className="flex items-center gap-xs justify-center">
                 <p className="text-[14px] leading-[20px] text-[#475467]">Zapomněli jste heslo?</p>
-                <Button size="md" hierarchy="link color" onClick={() => {}}>
+                <Button
+                  size="md"
+                  hierarchy="link color"
+                  onClick={() => router.push('/restore-password')}
+                >
                   Obnovit
                 </Button>
               </div>
