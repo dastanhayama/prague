@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
+import TabBarUsage from '@/components/TabBar/TabBarUsage'
 // import Marker from '@/components/TabBar/Marker'
 // import Tab from '@/components/TabBar/Tab'
 // import SidebarUsage from '@/components/SidebarMenu/SidebarUsage'
@@ -87,7 +88,7 @@ export default async function HomePage() {
       {/* <MenuItemUsage /> */}
       {/* <ButtonUtilityUsage /> */}
       {/* <SidebarUsage /> */}
-      
+      <TabBarUsage />
     </div>
   )
 }
