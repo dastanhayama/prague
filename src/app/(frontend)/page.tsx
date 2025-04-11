@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url'
 // import PageHeaderUsage from '@/components/PageHeader/PageHeaderUsage'
 import config from '@/payload.config'
 import './globals.css'
+import Marker from '@/components/TabBar/Marker'
 // import SidebarUsage from '@/components/SidebarMenu/SidebarUsage'
 // import ButtonUtilityUsage from '@/components/ButtonUtility/ButtonUtilityUsage'
 // import MenuItemUsage from '@/components/NavAccountCard/MenuItemUsage'
@@ -71,7 +72,7 @@ export default async function HomePage() {
           divider={true}
         />
       </div> */}
-     {/* <PageHeaderUsage /> */}
+      {/* <PageHeaderUsage /> */}
       {/* <AvatarUsageExample /> */}
       {/* <BadgeUsageExample /> */}
       {/* <NavItemBaseUsage /> */}
@@ -84,7 +85,22 @@ export default async function HomePage() {
       </div> */}
       {/* <MenuItemUsage /> */}
       {/* <ButtonUtilityUsage /> */}
-        {/* <SidebarUsage /> */}
+      {/* <SidebarUsage /> */}
+      <div className="flex flex-col gap-4">
+        <Marker text="2" color="dark" type="1digit" />
+        <Marker text="92" color="dark" type="2digit" />
+        <Marker text="2" color="dark" type="round" />
+      </div>
+      <div className="flex flex-col gap-4">
+        <Marker text="2" color="light" type="1digit" />
+        <Marker text="92" color="light" type="2digit" />
+        <Marker text="2" color="light" type="round" />
+      </div>
+      <div className="flex flex-col gap-4">
+        <Marker text="2" color="orange-dark" type="1digit" />
+        <Marker text="92" color="orange-dark" type="2digit" />
+        <Marker text="2" color="orange-dark" type="round" />
+      </div>
     </div>
   )
 }
